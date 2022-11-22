@@ -13,8 +13,9 @@ int width = 1000;
 int height = 1000;
 
 // Create vertices for our triangle, and triangles with our vertices
-GLfloat *vertices; // X, Y, Z, R, G, B repeating for each vertex
-GLuint *indices; // v0, v1, v2 (for a triangle) repeating for each triangle
+GLfloat *vertexBuffer; // X, Y, Z, R, G, B repeating for each vertex
+GLuint *indexBuffer; // v0, v1, v2 (for a triangle) repeating for each triangle
+size_t vertexBufferSize, indexBufferSize;
 
 void handle_interactions(GLFWwindow *window) {
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
@@ -76,7 +77,7 @@ int main() {
 	Scene scene(window, &creator);
 
 	// Allocate buffer sizes and fill them with data
-	scene.BuildTriangles(vertices, indices);
+	scene.BuildTriangles(&vertexBuffer, &indexBuffer, vertexBufferSize, indexBufferSize);
 
 
 	// Generates Shader object using shaders default.vert and default.frag
@@ -90,7 +91,7 @@ int main() {
 	VBO VBO1;
 
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(indices, sizeof(indices));
+	EBO EBO1(indexBuffer, indexBufferSize);
 
 	// Links VBO to 
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
@@ -111,7 +112,7 @@ int main() {
 		//scene.UpdateTriangles();
 
 		// Link object to vertices
-		VBO1.Link(vertices, sizeof(vertices));
+		VBO1.Link(vertexBuffer, vertexBufferSize);
 
 		// Redraw background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -122,9 +123,9 @@ int main() {
 		// Handle interactions with the program
 		handle_interactions(window);
 
-		glUniform1f(uniID, 1.0f);
+		glUniform1f(uniID, 0.0f);
 		VAO1.Bind();
-		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, indexBufferSize / sizeof(GLfloat), GL_UNSIGNED_INT, 0);
 
 		// Make sure to swap image buffers to display the correct frame
 		glfwSwapBuffers(window);
@@ -138,6 +139,9 @@ int main() {
 	VBO1.Delete();
 	EBO1.Delete();
 	shaderProgram.Delete();
+
+	// Deletes the memory allocated vertices and indices pointers
+	scene.Destroy(vertexBuffer, indexBuffer);
 
 	// Delete window
 	glfwDestroyWindow(window);

@@ -9,8 +9,7 @@ public:
 
 	SceneGeometry* geometry;
 	std::vector<SceneObject*> neighbours;
-	SceneObject() { this->geometry = NULL; }; // Dummy constructor
-	SceneObject(SceneGeometry *geometry);
+	SceneObject() { this->geometry = NULL; }
 	void AddNeighbour(SceneObject *neighbour);
 	void UpdateGeometry();
 };

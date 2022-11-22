@@ -19,12 +19,13 @@ void Scene::Update() {
 
 }
 
-void Scene::BuildTriangles(GLfloat* vertexBuffer, GLuint* indexBuffer) {
-	size_t vertexBufferSize = sizeof(GLfloat) * this->numVertices * 6;
-	size_t indexBufferSize = sizeof(GLuint) * this->numIndices * 3;
-	vertexBuffer = (GLfloat*)malloc(vertexBufferSize);
-	indexBuffer = (GLuint*)malloc(indexBufferSize);
-	if (vertexBuffer == NULL || indexBuffer == NULL) {
+void Scene::BuildTriangles(GLfloat **vertexBuffer, GLuint **indexBuffer, 
+						   size_t &vertexBufferSize, size_t &indexBufferSize) {
+	vertexBufferSize = sizeof(GLfloat) * this->numVertices * 6;
+	indexBufferSize = sizeof(GLuint) * this->numIndices * 3;
+	*vertexBuffer = (GLfloat*)malloc(vertexBufferSize);
+	*indexBuffer = (GLuint*)malloc(indexBufferSize);
+	if (*vertexBuffer == NULL || *indexBuffer == NULL) {
 		std::cout << "Malloc memory allocation failed." << std::endl;
 		exit(0);
 	}
@@ -32,13 +33,28 @@ void Scene::BuildTriangles(GLfloat* vertexBuffer, GLuint* indexBuffer) {
 
 	for (size_t i = 0; i < this->creator->numObjects; i++) {
 		SceneObject object = this->objects[i];
-		for (size_t v = 0; v < object.geometry->numVertices * 6; v++) {
-			assert(vBufferIndex < vertexBufferSize);
-			vertexBuffer[vBufferIndex++] = object.geometry->vertices[v];
+
+		for (int val : object.geometry->indices) {
+			(*indexBuffer)[iBufferIndex++] = (GLuint)(vBufferIndex / 6 + val);
+			std::printf("%d ", vBufferIndex / 6 + val);
 		}
+		std::printf("\n");
+
+		for (float val : object.geometry->vertices) {
+			assert(vBufferIndex < vertexBufferSize);
+			(*vertexBuffer)[vBufferIndex++] = (GLfloat)(val);
+			std::printf("%f ", val);
+		}
+		std::printf("\n");
+		std::printf("\n");
 	}
 }
 
-void UpdateTriangles(GLfloat* vertexBuffer) {
+void Scene::UpdateTriangles(GLfloat* vertexBuffer) {
 	
+}
+
+void Scene::Destroy(GLfloat* vertexBuffer, GLuint* indexBuffer) {
+	free(vertexBuffer);
+	free(indexBuffer);
 }

@@ -20,9 +20,9 @@ void ObjectGridCreator::Create(std::vector<SceneObject>& objects) {
 		for (size_t col = 0; col < this->cols; col++) {
 			float x = -1.0f + 2.0f / (this->cols + 1) * (col + 1);
 			size_t index = row * this->cols + col;
-			SceneGeometryRect *rect = (SceneGeometryRect*)malloc(sizeof(SceneGeometryRect));
-			*rect = SceneGeometryRect(x, y, rect_size, rect_size, 1.0f, 1.0f, 1.0f, 1.0f);
-			objects.push_back(SceneObject(rect));
+			SceneObject object;
+			object.geometry = new SceneGeometryRect(x, y, rect_size, rect_size, 1.0f, 1.0f, 1.0f, 1.0f);
+			objects.push_back(object);
 		}
 	}
 }

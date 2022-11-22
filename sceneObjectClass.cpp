@@ -1,9 +1,10 @@
 #include "sceneObjectClass.h"
 
+/*
 // SceneObject constructor
 SceneObject::SceneObject(SceneGeometry *geometry) {
 	this->geometry = geometry;
-}
+}*/
 
 // Adds another SceneObject to the list of neighbours
 void SceneObject::AddNeighbour(SceneObject* neighbour) {

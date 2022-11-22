@@ -14,8 +14,10 @@ public:
 
 	Scene(GLFWwindow *window, ObjectCreator *creator);
 	void Update();
-	void BuildTriangles(GLfloat* vertexBuffer, GLuint* indexBuffer);
-	void UpdateTriangles(GLfloat* vertexBuffer);
+	void BuildTriangles(GLfloat** vertexBuffer, GLuint** indexBuffer,
+						size_t& vertexBufferSize, size_t& indexBufferSize);
+	void UpdateTriangles(GLfloat *vertexBuffer);
+	void Destroy(GLfloat* vertexBuffer, GLuint* indexBuffer);
 };
 
 #endif
