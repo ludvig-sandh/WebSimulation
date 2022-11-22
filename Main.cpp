@@ -6,28 +6,15 @@
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
+#include "sceneClass.h"
 
 // Variables for window size so we can easily modify it
 int width = 1000;
 int height = 1000;
 
-// Create vertices for our triangle
-GLfloat vertices[] = {
-//   X		 Y								Z	  COLORS
-	-0.5f,  -0.5f * float(sqrt(3)) / 3,		0.0f, 0.8f, 0.3f,  0.02f, // Lower left corner
-	 0.5f,  -0.5f * float(sqrt(3)) / 3,		0.0f, 0.8f, 0.3f,  0.02f, // Lower right corner
-	 0.0f,   0.5f * float(sqrt(3)) * 2 / 3, 0.0f, 1.0f, 0.6f,  0.32f, // Upper corner
-	-0.25f,  0.5f * float(sqrt(3)) / 6,		0.0f, 0.9f, 0.45f, 0.17f, // Inner left
-	 0.25f,  0.5f * float(sqrt(3)) / 6,		0.0f, 0.9f, 0.45f, 0.17f, // Inner right
-	 0.0f,  -0.5f * float(sqrt(3)) / 3,		0.0f, 0.8f, 0.3f,  0.02f  // Inner down
-};
-
-// Create the triangles with our vertices
-GLuint indices[] = {
-	0, 3, 5, // Lower left triangle
-	3, 2, 4, // Lower right triangle
-	5, 4, 1  // Upper triangle
-};
+// Create vertices for our triangle, and triangles with our vertices
+GLfloat *vertices; // X, Y, Z, R, G, B repeating for each vertex
+GLuint *indices; // v0, v1, v2 (for a triangle) repeating for each triangle
 
 void handle_interactions(GLFWwindow *window) {
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
@@ -39,7 +26,8 @@ void handle_interactions(GLFWwindow *window) {
 	}
 }
 
-int initWindow(GLFWwindow *window) {
+// Helper function to initialize GLFW and load necessary things related to GUI
+GLFWwindow *initWindow() {
 	// Initialize GLFW
 	glfwInit();
 
@@ -52,13 +40,12 @@ int initWindow(GLFWwindow *window) {
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// Create a GLFWwindow object 1000x1000px naming it "WebSimulation"
-	GLFWwindow* window = glfwCreateWindow(width, height, "WebSimulation", NULL, NULL);
+	// Create a GLFWwindow object width x height px, naming it "WebSimulation"
+	GLFWwindow *window = glfwCreateWindow(width, height, "WebSimulation", NULL, NULL);
 
 	// Error check if the window fails to create
 	if (window == NULL) {
-		std::cout << "Failed to create GLFW window" << std::endl;
-		return -1;
+		return NULL;
 	}
 
 	// Introduce the window into the current context
@@ -71,14 +58,26 @@ int initWindow(GLFWwindow *window) {
 	// In this case the viewport goes from x = 0, y = 0, to x = 1000, y = 1000
 	glViewport(0, 0, width, height);
 	
-	return 0;
+	return window;
 }
 
 int main() {
 
-	GLFWwindow* window;
-	int resultCode = initWindow(window);
-	if (resultCode) return resultCode;
+	// Create GUI window
+	GLFWwindow* window = initWindow();
+	if (window == NULL) {
+		std::cout << "Failed to create GLFW window" << std::endl;
+		return -1;
+	}
+
+
+	// Create Scene with 10x10 grid of objects
+	ObjectGridCreator creator = ObjectGridCreator(10, 10);
+	Scene scene(window, &creator);
+
+	// Allocate buffer sizes and fill them with data
+	scene.BuildTriangles(vertices, indices);
+
 
 	// Generates Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("default.vert", "default.frag");
@@ -107,9 +106,9 @@ int main() {
 	// Main while loop
 	while (!glfwWindowShouldClose(window)) {
 
-		for (int i = 0; i < sizeof(vertices) / (6 * sizeof(float)); i++) {
-			vertices[i * 6] += 0.001;
-		}
+		// Here we update the scene
+		//scene.Update();
+		//scene.UpdateTriangles();
 
 		// Link object to vertices
 		VBO1.Link(vertices, sizeof(vertices));

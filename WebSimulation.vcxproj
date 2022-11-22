@@ -140,6 +140,10 @@
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="objectCreatorClass.cpp" />
+    <ClCompile Include="sceneClass.cpp" />
+    <ClCompile Include="sceneGeometryClass.cpp" />
+    <ClCompile Include="sceneObjectClass.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
@@ -150,7 +154,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h" />
+    <ClInclude Include="objectCreatorClass.h" />
     <ClInclude Include="sceneClass.h" />
+    <ClInclude Include="sceneGeometryClass.h" />
     <ClInclude Include="sceneObjectClass.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="VAO.h" />

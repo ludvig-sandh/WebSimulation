@@ -1,25 +1,18 @@
 #ifndef SCENE_OBJECT_CLASS_H
 #define SCENE_OBJECT_CLASS_H
 
-#include <glad/glad.h>
-
-class SceneGeometry {
-public:
-	float vertices[];
-	float indices[];
-	SceneGeometry();
-
-};
+#include <vector>
+#include "sceneGeometryClass.h"
 
 class SceneObject {
 public:
 
-	float x, y;
-	SceneGeometry geo;
-
-	SceneObject(float x, float y, SceneGeometry geo);
-	void UpdatePos();
+	SceneGeometry* geometry;
+	std::vector<SceneObject*> neighbours;
+	SceneObject() { this->geometry = NULL; }; // Dummy constructor
+	SceneObject(SceneGeometry *geometry);
+	void AddNeighbour(SceneObject *neighbour);
+	void UpdateGeometry();
 };
-
 
 #endif
