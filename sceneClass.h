@@ -16,7 +16,7 @@ public:
 	void Update();
 	void BuildTriangles(GLfloat** vertexBuffer, GLuint** indexBuffer,
 						size_t& vertexBufferSize, size_t& indexBufferSize);
-	void UpdateTriangles(GLfloat *vertexBuffer);
+	void UpdateTriangles(GLfloat **vertexBuffer);
 	void Destroy(GLfloat* vertexBuffer, GLuint* indexBuffer);
 };
 

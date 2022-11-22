@@ -5,9 +5,9 @@ void SceneGeometry::TranslatePosition(float dx, float dy) {
 	this->x += dx;
 	this->y += dy;
 	// Loop through all vertices and update their x & y coordinates
-	for (size_t i = 0; i < vertices.size(); i += 6) {
-		vertices[i] += dx;
-		vertices[i + 1] += dy;
+	for (size_t i = 0; i < this->vertices.size(); i += 6) {
+		this->vertices[i] += dx;
+		this->vertices[i + 1] += dy;
 	}
 }
 

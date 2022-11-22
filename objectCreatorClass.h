@@ -7,7 +7,7 @@
 class ObjectCreator {
 public:
 	int numObjects = 0;
-	virtual void Create(std::vector<SceneObject> &objects) = 0;
+	virtual void Create(std::vector<SceneObject>& objects) = 0;
 };
 
 // Class for creating a grid arrangement of new scene objects
@@ -16,6 +16,8 @@ public:
 	int rows, cols;
 	ObjectGridCreator(int rows, int cols);
 	void Create(std::vector<SceneObject>& objects);
+private:
+	int GetGridIndex(int row, int col);
 };
 
 #endif

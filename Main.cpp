@@ -108,8 +108,8 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 
 		// Here we update the scene
-		//scene.Update();
-		//scene.UpdateTriangles();
+		scene.Update();
+		scene.UpdateTriangles(&vertexBuffer);
 
 		// Link object to vertices
 		VBO1.Link(vertexBuffer, vertexBufferSize);

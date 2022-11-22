@@ -9,14 +9,16 @@ Scene::Scene(GLFWwindow* window, ObjectCreator *creator) {
 
 	// Now when the creator has added all objects, count all
 	// vertices and indices in the scene
-	for (size_t i = 0; i < this->creator->numObjects; i++) {
-		this->numVertices += this->objects[i].geometry->numVertices;
-		this->numIndices += this->objects[i].geometry->numIndices;
+	for (SceneObject& object : this->objects) {
+		this->numVertices += object.geometry->numVertices;
+		this->numIndices += object.geometry->numIndices;
 	}
 }
 
 void Scene::Update() {
-
+	for (SceneObject& object : this->objects) {
+		object.UpdateGeometry();
+	}
 }
 
 void Scene::BuildTriangles(GLfloat **vertexBuffer, GLuint **indexBuffer, 
@@ -36,22 +38,25 @@ void Scene::BuildTriangles(GLfloat **vertexBuffer, GLuint **indexBuffer,
 
 		for (int val : object.geometry->indices) {
 			(*indexBuffer)[iBufferIndex++] = (GLuint)(vBufferIndex / 6 + val);
-			std::printf("%d ", vBufferIndex / 6 + val);
 		}
-		std::printf("\n");
 
 		for (float val : object.geometry->vertices) {
 			assert(vBufferIndex < vertexBufferSize);
 			(*vertexBuffer)[vBufferIndex++] = (GLfloat)(val);
-			std::printf("%f ", val);
 		}
-		std::printf("\n");
-		std::printf("\n");
 	}
 }
 
-void Scene::UpdateTriangles(GLfloat* vertexBuffer) {
-	
+void Scene::UpdateTriangles(GLfloat **vertexBuffer) {
+	size_t vBufferIndex = 0;
+
+	for (size_t i = 0; i < this->creator->numObjects; i++) {
+		SceneObject object = this->objects[i];
+
+		for (float val : object.geometry->vertices) {
+			(*vertexBuffer)[vBufferIndex++] = (GLfloat)(val);
+		}
+	}
 }
 
 void Scene::Destroy(GLfloat* vertexBuffer, GLuint* indexBuffer) {
