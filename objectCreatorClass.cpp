@@ -23,25 +23,25 @@ void ObjectGridCreator::Create(std::vector<SceneObject>& objects) {
 			SceneObject object;
 			object.geometry = new SceneGeometryRect(x, y, rect_size, rect_size, 1.0f, 1.0f, 1.0f, 1.0f);
 
-			/*
+			
 			// Now let's connect neighbours
 			if (row) {
 				int neighbourIndex = this->GetGridIndex(row - 1, col);
-				objects[neighbourIndex].AddNeighbour(objects[index]);
-				//object.AddNeighbour(&(objects[neighbourIndex]));
+				objects[neighbourIndex].AddNeighbour(index);
+				object.AddNeighbour(neighbourIndex);
 			}else {
 				// TODO: Add object equivalent to EdgePoint
 			}
 
 			if (col) {
 				int neighbourIndex = this->GetGridIndex(row, col - 1);
-				objects[neighbourIndex].AddNeighbour(&objects.back());
-				//object.AddNeighbour(&(objects[neighbourIndex]));
+				objects[neighbourIndex].AddNeighbour(index);
+				object.AddNeighbour(neighbourIndex);
 			}
 			else {
 
 			}
-			*/
+			
 
 			objects.push_back(object);
 		}

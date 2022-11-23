@@ -8,10 +8,10 @@ class SceneObject {
 public:
 
 	SceneGeometry* geometry;
-	std::vector<SceneObject*> neighbours;
+	std::vector<int> neighbours;
 	SceneObject() { this->geometry = NULL; }
-	void AddNeighbour(SceneObject *neighbour);
-	void UpdateGeometry();
+	void AddNeighbour(int neighbourIndex);
+	void UpdateGeometry(std::vector<SceneObject>& objects);
 };
 
 #endif

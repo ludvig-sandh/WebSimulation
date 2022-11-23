@@ -17,7 +17,7 @@ Scene::Scene(GLFWwindow* window, ObjectCreator *creator) {
 
 void Scene::Update() {
 	for (SceneObject& object : this->objects) {
-		object.UpdateGeometry();
+		object.UpdateGeometry(this->objects);
 	}
 }
 
