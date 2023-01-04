@@ -8,9 +8,12 @@ class SceneObject {
 public:
 
 	SceneGeometry* geometry;
-	std::vector<int> neighbours;
+	std::vector<size_t> neighbours;
+	std::vector<std::pair<float, float>> staticNeighbours;
+	bool isStatic = false;
 	SceneObject() { this->geometry = NULL; }
-	void AddNeighbour(int neighbourIndex);
+	void AddNeighbour(size_t neighbourIndex);
+	void AddStaticNeighbour(float x, float y);
 	void UpdateGeometry(std::vector<SceneObject>& objects);
 };
 

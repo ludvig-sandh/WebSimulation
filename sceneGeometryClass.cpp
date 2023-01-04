@@ -11,11 +11,25 @@ void SceneGeometry::TranslatePosition(float dx, float dy) {
 	}
 }
 
+// Updates the color of the object
+void SceneGeometry::SetColor(float red, float green, float blue) {
+	for (size_t i = 0; i < 4; i++) {
+		this->vertices[i * 6 + 3] = red;
+		this->vertices[i * 6 + 4] = green;
+		this->vertices[i * 6 + 5] = blue;
+	}
+}
+
 SceneGeometryRect::SceneGeometryRect(float x, float y, float width, float height,
-	float red, float green, float blue, float alpha) {
+	float red, float green, float blue) {
 	// Store instance variables
 	this->x = x;
 	this->y = y;
+	this->lastX = x;
+	this->lastY = y;
+	this->startX = x;
+	this->startY = y;
+
 	this->width = width;
 	this->height = height;
 

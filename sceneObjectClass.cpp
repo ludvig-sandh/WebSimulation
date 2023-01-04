@@ -7,15 +7,17 @@ SceneObject::SceneObject(SceneGeometry *geometry) {
 }*/
 
 // Adds another SceneObject to the list of neighbours
-void SceneObject::AddNeighbour(int neighbourIndex) {
+void SceneObject::AddNeighbour(size_t neighbourIndex) {
 	this->neighbours.push_back(neighbourIndex);
+}
+
+void SceneObject::AddStaticNeighbour(float x, float y) {
+	this->staticNeighbours.push_back(std::make_pair(x, y));
 }
 
 // Updates the position of the scene object by moving it
 // towards the average position of its neighbours
 void SceneObject::UpdateGeometry(std::vector<SceneObject>& objects) {
-	// TODO: make sure edge objects cannot move
-	// Add attribute isFixed for each object geometry.
 	// All edges will be fixed, as well as the current object we 
 	// are dragging
 	float xAvg = 0;
@@ -24,9 +26,14 @@ void SceneObject::UpdateGeometry(std::vector<SceneObject>& objects) {
 		xAvg += (objects[neighbourIdx].geometry->x - this->geometry->x);
 		yAvg += (objects[neighbourIdx].geometry->y - this->geometry->y);
 	}
+	for (auto& point : this->staticNeighbours) {
+		xAvg += point.first - this->geometry->x;
+		yAvg += point.second - this->geometry->y;
+	}
+
 	// alpha multiplies the distance to move.
-	// Could be seen as an acceleration coefficient
-	float alpha = 1.0f;
-	alpha = 0.3;
+	// Can be seen as an acceleration coefficient
+	float alpha = 0.495;
+	// alpha = 0.5f; // Also really cool but starts to get out of hand
 	this->geometry->TranslatePosition(xAvg * alpha, yAvg * alpha);
 }

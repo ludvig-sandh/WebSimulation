@@ -9,7 +9,7 @@
 #include "sceneClass.h"
 
 // Variables for window size so we can easily modify it
-int width = 1000;
+int width = 2000;
 int height = 1000;
 
 // Create vertices for our triangle, and triangles with our vertices
@@ -17,13 +17,20 @@ GLfloat *vertexBuffer; // X, Y, Z, R, G, B repeating for each vertex
 GLuint *indexBuffer; // v0, v1, v2 (for a triangle) repeating for each triangle
 size_t vertexBufferSize, indexBufferSize;
 
-void handle_interactions(GLFWwindow *window) {
+void GetCursorTranslated(GLFWwindow *window, double &mouseX, double &mouseY) {
+	glfwGetCursorPos(window, &mouseX, &mouseY);
+	mouseX = mouseX / width * 2.0 - 1.0;
+	mouseY = mouseY / height * -2.0 + 1.0;
+}
+
+void handle_interactions(GLFWwindow *window, Scene *scene) {
+	double mouseX, mouseY;
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		double mouseX, mouseY;
-		glfwGetCursorPos(window, &mouseX, &mouseY); 
+		GetCursorTranslated(window, mouseX, mouseY);
+		scene->MousePressed(mouseX, mouseY);
 	}else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
-		double mouseX, mouseY;
-		glfwGetCursorPos(window, &mouseX, &mouseY);
+		GetCursorTranslated(window, mouseX, mouseY);
+		scene->MouseReleased(mouseX, mouseY);
 	}
 }
 
@@ -71,14 +78,12 @@ int main() {
 		return -1;
 	}
 
-
-	// Create Scene with 10x10 grid of objects
-	ObjectGridCreator creator = ObjectGridCreator(10, 10);
-	Scene scene(window, &creator);
+	// Create Scene with grid of objects 
+	Scene scene(window, 70, 140);
+	//Scene scene(window, 20, 40);
 
 	// Allocate buffer sizes and fill them with data
 	scene.BuildTriangles(&vertexBuffer, &indexBuffer, vertexBufferSize, indexBufferSize);
-
 
 	// Generates Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("default.vert", "default.frag");
@@ -121,7 +126,7 @@ int main() {
 		shaderProgram.Activate();
 
 		// Handle interactions with the program
-		handle_interactions(window);
+		handle_interactions(window, &scene);
 
 		glUniform1f(uniID, 0.0f);
 		VAO1.Bind();

@@ -36,9 +36,6 @@
     <ClCompile Include="VAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="objectCreatorClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="sceneClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -74,9 +71,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sceneObjectClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="objectCreatorClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sceneGeometryClass.h">
