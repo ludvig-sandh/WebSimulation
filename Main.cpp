@@ -80,7 +80,7 @@ int main() {
 
 	// Create Scene with grid of objects 
 	Scene scene(window, 70, 140);
-	//Scene scene(window, 20, 40);
+	// Scene scene(window, 20, 40);
 
 	// Allocate buffer sizes and fill them with data
 	scene.BuildTriangles(&vertexBuffer, &indexBuffer, vertexBufferSize, indexBufferSize);

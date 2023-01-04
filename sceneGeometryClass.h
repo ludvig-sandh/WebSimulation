@@ -8,9 +8,8 @@ public:
 	float x = 0, y = 0;
 	float startX, startY;
 	float lastX, lastY;
-	size_t numVertices = 0, numIndices = 0;
+	size_t numVertices = 0;
 	std::vector<float> vertices;
-	std::vector<int> indices;
 	void TranslatePosition(float dx, float dy);
 	void SetColor(float red, float green, float blue);
 	virtual bool Contains(float xOther, float yOther) = 0;

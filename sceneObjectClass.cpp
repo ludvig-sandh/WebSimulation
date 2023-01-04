@@ -36,4 +36,11 @@ void SceneObject::UpdateGeometry(std::vector<SceneObject>& objects) {
 	float alpha = 0.495;
 	// alpha = 0.5f; // Also really cool but starts to get out of hand
 	this->geometry->TranslatePosition(xAvg * alpha, yAvg * alpha);
+
+}
+
+// Update vertex positions
+void SceneObject::UpdateVertices() {
+	this->geometry->vertices[0] = this->geometry->x;
+	this->geometry->vertices[1] = this->geometry->y;
 }

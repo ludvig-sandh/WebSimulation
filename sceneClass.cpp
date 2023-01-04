@@ -15,13 +15,12 @@ Scene::Scene(GLFWwindow* window, int rows, int cols) {
 	// vertices and indices in the scene
 	for (SceneObject& object : this->objects) {
 		this->numVertices += object.geometry->numVertices;
-		this->numIndices += object.geometry->numIndices;
 	}
 }
 
 void Scene::CreateGrid() {
-	float width = 1.0f / this->cols * 1.5;
-	float height = 1.0f / this->rows * 1.5;
+	float width = 1.0f / this->cols * 2.0f;
+	float height = 1.0f / this->rows * 2.0f;
 	float ygap = 2.0f / (this->rows + 1);
 	float xgap = 2.0f / (this->cols + 1);
 	for (int row = 0; row < this->rows; row++) {
@@ -85,6 +84,8 @@ void Scene::Update() {
 			object.UpdateGeometry(this->objects);
 		}
 
+		object.UpdateVertices();
+
 		// Change color based on how far from start each object is
 		float color1;
 		float color2;
@@ -109,7 +110,7 @@ void Scene::Update() {
 void Scene::BuildTriangles(GLfloat **vertexBuffer, GLuint **indexBuffer, 
 						   size_t &vertexBufferSize, size_t &indexBufferSize) {
 	vertexBufferSize = sizeof(GLfloat) * this->numVertices * 6;
-	indexBufferSize = sizeof(GLuint) * this->numIndices * 3;
+	indexBufferSize = sizeof(GLuint) * (this->numVertices - this->rows - this->cols + 1) * 3 * 2;
 	*vertexBuffer = (GLfloat*)malloc(vertexBufferSize);
 	*indexBuffer = (GLuint*)malloc(indexBufferSize);
 	if (*vertexBuffer == NULL || *indexBuffer == NULL) {
@@ -122,8 +123,16 @@ void Scene::BuildTriangles(GLfloat **vertexBuffer, GLuint **indexBuffer,
 
 		SceneObject object = this->objects[i];
 
-		for (int val : object.geometry->indices) {
-			(*indexBuffer)[iBufferIndex++] = (GLuint)(vBufferIndex / 6 + val);
+		int row = i / this->cols;
+		int col = i % this->cols;
+		if (col != this->cols - 1 && row != this->rows - 1) {
+			(*indexBuffer)[iBufferIndex++] = (GLuint)(i);
+			(*indexBuffer)[iBufferIndex++] = (GLuint)(i + 1);
+			(*indexBuffer)[iBufferIndex++] = (GLuint)(i + this->cols + 1);
+
+			(*indexBuffer)[iBufferIndex++] = (GLuint)(i + this->cols + 1);
+			(*indexBuffer)[iBufferIndex++] = (GLuint)(i + this->cols);
+			(*indexBuffer)[iBufferIndex++] = (GLuint)(i);
 		}
 
 		for (float val : object.geometry->vertices) {

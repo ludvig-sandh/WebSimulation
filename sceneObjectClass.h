@@ -15,6 +15,7 @@ public:
 	void AddNeighbour(size_t neighbourIndex);
 	void AddStaticNeighbour(float x, float y);
 	void UpdateGeometry(std::vector<SceneObject>& objects);
+	void UpdateVertices();
 };
 
 #endif
