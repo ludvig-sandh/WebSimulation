@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>A:\Visual Studio Projects\WebSimulation\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>A:\Visual Studio Projects\WebSimulation\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>A:\Visual Studio Projects\WebSimulation\src\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>A:\Visual Studio Projects\WebSimulation\src\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>A:\Visual Studio Projects\WebSimulation\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>A:\Visual Studio Projects\WebSimulation\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>A:\Visual Studio Projects\WebSimulation\src\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>A:\Visual Studio Projects\WebSimulation\src\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
