@@ -1,9 +1,9 @@
 # WebSimulation
 
-#### A visual simulation written in C++ with [OpenGL](https://www.opengl.org/) of something that resembles a spider web that can be interacted with.
+#### A visual simulation I came up with written in C++ with [OpenGL](https://www.opengl.org/) of something that resembles a spider web that can be interacted with.
 
 ## Background
-Imagine you have a grid of points, all connected to their four closest neighbors with an invisible string. At each iteration of the simulation, the points
+Imagine you have a grid of points, all connected to their four closest neighbors with an invisible spring. At each iteration of the simulation, the points
 move towards the general direction of its connected neighbors. Let the outer ring of points in the grid be fixed. More specifically, the simulation works 
 like this at each step:
 ```
@@ -17,11 +17,11 @@ loop (at each frame):
         let general_direction = null 2D vector
         for each point P2 in P's connected neighbors:
             general_direction += P2 - P // Vector from point to neighbor
-        // Move point towards an average position of its neighbors
+        // Move point towards the average position of its neighbors
         P += general_direction * ACCELERATION_FACTOR
 ```
 
-The reason we need to fix the edge points in the grid is to keep the configuration of points stable. Otherwise the points would collapse into the center. At this point not much would happen to the points, as the average direction from a point to its neighbors is still a null vector. All the points would stay at their initial position. It becomes interesting when we reposition a point and let the simulation run. Nearby points get dragged closer to the moved point. If we visually plot all points in the grid as geometrical objects and let the user drag points around freely, we can see something that starts to resemble a spider web. For large grids, it even looks like a cloth simulation - see animated gifs below. Running this in 100+ frames per second looks even better than the gifs though.
+The reason we need to fix the edge points in the grid is to keep the configuration of points stable. Otherwise the points would collapse into the center. At this point not much would happen to the points, since the average direction from a point to its neighbors is still a null vector. All the points would stay at their initial position. It becomes interesting when we reposition a point and let the simulation run. Nearby points get dragged closer to the moved point. If we visually plot all points in the grid as geometrical objects and let the user drag points around freely, we can see something that starts to resemble a spider web. For large grids, it even looks like a cloth or wave simulation - see animated gifs below. Running this in 100+ frames per second looks even better than the gifs though.
 
 ## Development
 
