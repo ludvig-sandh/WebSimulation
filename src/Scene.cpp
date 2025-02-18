@@ -20,6 +20,12 @@ Scene::Scene(GLFWwindow* window, int rows, int cols) {
 	}
 }
 
+// Deletes the memory allocated vertices and indices pointers
+Scene::~Scene() {
+	free(this->vertexBuffer);
+	free(this->indexBuffer);
+}
+
 void Scene::CreateGrid() {
 	float width = 1.0f / this->cols * 1.5;
 	float height = 1.0f / this->rows * 1.5;
@@ -107,13 +113,12 @@ void Scene::Update() {
 	}
 }
 
-void Scene::BuildTriangles(GLfloat **vertexBuffer, GLuint **indexBuffer, 
-						   size_t &vertexBufferSize, size_t &indexBufferSize) {
-	vertexBufferSize = sizeof(GLfloat) * this->numVertices * 6;
-	indexBufferSize = sizeof(GLuint) * this->numIndices * 3;
-	*vertexBuffer = (GLfloat*)malloc(vertexBufferSize);
-	*indexBuffer = (GLuint*)malloc(indexBufferSize);
-	if (*vertexBuffer == NULL || *indexBuffer == NULL) {
+void Scene::BuildTriangles() {
+	this->vertexBufferSize = sizeof(GLfloat) * this->numVertices * 6;
+	this->indexBufferSize = sizeof(GLuint) * this->numIndices * 3;
+	this->vertexBuffer = (GLfloat*)malloc(vertexBufferSize);
+	this->indexBuffer = (GLuint*)malloc(indexBufferSize);
+	if (!this->vertexBuffer || !this->indexBuffer) {
 		std::cout << "Malloc memory allocation failed." << std::endl;
 		exit(0);
 	}
@@ -124,12 +129,12 @@ void Scene::BuildTriangles(GLfloat **vertexBuffer, GLuint **indexBuffer,
 		SceneObject object = this->objects[i];
 
 		for (int val : object.geometry->indices) {
-			(*indexBuffer)[iBufferIndex++] = (GLuint)(vBufferIndex / 6 + val);
+			this->indexBuffer[iBufferIndex++] = (GLuint)(vBufferIndex / 6 + val);
 		}
 
 		for (float val : object.geometry->vertices) {
 			assert(vBufferIndex < vertexBufferSize);
-			(*vertexBuffer)[vBufferIndex++] = (GLfloat)(val);
+			this->vertexBuffer[vBufferIndex++] = (GLfloat)(val);
 		}
 	}
 }
@@ -144,11 +149,6 @@ void Scene::UpdateTriangles(GLfloat **vertexBuffer) {
 			(*vertexBuffer)[vBufferIndex++] = (GLfloat)(val);
 		}
 	}
-}
-
-void Scene::Destroy(GLfloat* vertexBuffer, GLuint* indexBuffer) {
-	free(vertexBuffer);
-	free(indexBuffer);
 }
 
 void Scene::MousePressed(double x, double y) {

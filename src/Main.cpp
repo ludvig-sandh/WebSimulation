@@ -13,11 +13,6 @@
 int width = 2000;
 int height = 1000;
 
-// Create vertices for our triangle, and triangles with our vertices
-GLfloat *vertexBuffer; // X, Y, Z, R, G, B repeating for each vertex
-GLuint *indexBuffer; // v0, v1, v2 (for a triangle) repeating for each triangle
-size_t vertexBufferSize, indexBufferSize;
-
 // Finds the mouse coordinates and maps them into the range [-1, 1]
 void GetCursorTranslated(GLFWwindow *window, double &mouseX, double &mouseY) {
 	glfwGetCursorPos(window, &mouseX, &mouseY);
@@ -85,7 +80,7 @@ int main() {
 	Scene scene(window, 70, 140);
 
 	// Allocate buffer sizes and fill them with data
-	scene.BuildTriangles(&vertexBuffer, &indexBuffer, vertexBufferSize, indexBufferSize);
+	scene.BuildTriangles();
 
 	// Generates Shader object using shaders default.vert and default.frag
     std::unique_ptr<Shader> shaderProgram = nullptr;
@@ -115,7 +110,7 @@ int main() {
 	VBO VBO1;
 
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(indexBuffer, indexBufferSize);
+	EBO EBO1(scene.indexBuffer, scene.indexBufferSize);
 
 	// Links VBO to 
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
@@ -132,10 +127,10 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 		// Here we update the scene
 		scene.Update();
-		scene.UpdateTriangles(&vertexBuffer);
+		scene.UpdateTriangles(&scene.vertexBuffer);
 
 		// Link object to vertices
-		VBO1.Link(vertexBuffer, vertexBufferSize);
+		VBO1.Link(scene.vertexBuffer, scene.vertexBufferSize);
 
 		// Redraw background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -148,7 +143,7 @@ int main() {
 
 		glUniform1f(uniID, 0.0f);
 		VAO1.Bind();
-		glDrawElements(GL_TRIANGLES, indexBufferSize / sizeof(GLfloat), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, scene.indexBufferSize / sizeof(GLfloat), GL_UNSIGNED_INT, 0);
 
 		// Make sure to swap image buffers to display the correct frame
 		glfwSwapBuffers(window);
@@ -156,9 +151,6 @@ int main() {
 		// Take care of all GLFW events
 		glfwPollEvents();
 	}
-
-	// Deletes the memory allocated vertices and indices pointers
-	scene.Destroy(vertexBuffer, indexBuffer);
 
 	// Delete window
 	glfwDestroyWindow(window);

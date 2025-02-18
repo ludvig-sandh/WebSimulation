@@ -6,6 +6,10 @@
 
 class Scene {
 public:
+    // Contains all vertices, and all vertex indices of triangles
+    GLfloat *vertexBuffer; // X, Y, Z, R, G, B repeating for each vertex
+    GLuint *indexBuffer; // v0, v1, v2 (for a triangle) repeating for each triangle
+    size_t vertexBufferSize, indexBufferSize;
 
 	GLFWwindow *window;
 	std::vector<SceneObject> objects;
@@ -16,15 +20,14 @@ public:
 	bool isMousePressed = false;
 
 	Scene(GLFWwindow *window, int rows, int cols);
+    ~Scene();
 
 	void CreateGrid();
 	int GetGridIndex(int row, int col);
 	
 	void Update();
-	void BuildTriangles(GLfloat** vertexBuffer, GLuint** indexBuffer,
-						size_t& vertexBufferSize, size_t& indexBufferSize);
+	void BuildTriangles();
 	void UpdateTriangles(GLfloat **vertexBuffer);
-	void Destroy(GLfloat* vertexBuffer, GLuint* indexBuffer);
 
 	void MousePressed(double x, double y);
 	void MouseReleased(double x, double y);
