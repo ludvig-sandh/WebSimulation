@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -70,7 +71,6 @@ GLFWwindow *initWindow() {
 }
 
 int main() {
-
 	// Create GUI window
 	GLFWwindow* window = initWindow();
 	if (window == NULL) {
@@ -80,13 +80,27 @@ int main() {
 
 	// Create Scene with grid of objects 
 	Scene scene(window, 70, 140);
-	//Scene scene(window, 5, 10);
 
 	// Allocate buffer sizes and fill them with data
 	scene.BuildTriangles(&vertexBuffer, &indexBuffer, vertexBufferSize, indexBufferSize);
 
 	// Generates Shader object using shaders default.vert and default.frag
-	Shader shaderProgram("default.vert", "default.frag");
+    std::unique_ptr<Shader> shaderProgram = nullptr;
+    try {
+	    shaderProgram = std::make_unique<Shader>("../src/shaders/default.vert", "../src/shaders/default.frag");
+    }catch (const std::runtime_error& error) {
+        std::cerr << error.what() << "\nPress Enter to close..." << std::endl;
+        
+        // Delete window
+        glfwDestroyWindow(window);
+
+        // Terminate GLFW before ending the program
+        glfwTerminate();
+
+        std::cin.get();
+
+        return EXIT_FAILURE;
+    }
 
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
@@ -107,7 +121,7 @@ int main() {
 	VBO1.Unbind();
 	EBO1.Unbind();
 
-	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+	GLuint uniID = glGetUniformLocation(shaderProgram->ID, "scale");
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window)) {
@@ -123,7 +137,7 @@ int main() {
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		shaderProgram.Activate();
+		shaderProgram->Activate();
 
 		// Handle interactions with the program
 		handle_interactions(window, &scene);
@@ -143,7 +157,7 @@ int main() {
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
-	shaderProgram.Delete();
+	shaderProgram->Delete();
 
 	// Deletes the memory allocated vertices and indices pointers
 	scene.Destroy(vertexBuffer, indexBuffer);

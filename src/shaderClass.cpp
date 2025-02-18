@@ -1,4 +1,5 @@
 #include "shaderClass.h"
+#include <cstring>
 
 std::string get_file_contents(const char* filename) {
 	std::ifstream in(filename, std::ios::binary);
@@ -11,12 +12,12 @@ std::string get_file_contents(const char* filename) {
 		in.close();
 		return contents;
 	}
-	throw errno;
+	throw std::runtime_error("ERROR: Shader file coult not be found: " + std::string(strerror(errno)));;
 }
 
 Shader::Shader(const char* vertexFile, const char* fragmentFile) {
-	std::string vertexCode = get_file_contents(vertexFile);
-	std::string fragmentCode = get_file_contents(fragmentFile);
+    std::string vertexCode = get_file_contents(vertexFile);
+    std::string fragmentCode = get_file_contents(fragmentFile);
 
 	const char* vertexSource = vertexCode.c_str();
 	const char* fragmentSource = fragmentCode.c_str();
@@ -63,7 +64,7 @@ void Shader::compileErrors(unsigned int shader, const char* type)
 	GLint hasCompiled;
 	// Character array to store error message in
 	char infoLog[1024];
-	if (type != "PROGRAM")
+	if (std::strcmp(type, "PROGRAM"))
 	{
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
 		if (hasCompiled == GL_FALSE)

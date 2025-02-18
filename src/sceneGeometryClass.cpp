@@ -1,4 +1,5 @@
 #include "sceneGeometryClass.h"
+#include <cmath>
 
 // Translates the position of a scene geometry object
 void SceneGeometry::TranslatePosition(float dx, float dy) {

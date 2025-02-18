@@ -1,6 +1,7 @@
 #include "sceneClass.h"
 #include <iostream>
 #include <cassert>
+#include <cmath>
 
 Scene::Scene(GLFWwindow* window, int rows, int cols) {
 	this->window = window;
