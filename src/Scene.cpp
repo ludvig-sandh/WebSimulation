@@ -139,14 +139,14 @@ void Scene::BuildTriangles() {
 	}
 }
 
-void Scene::UpdateTriangles(GLfloat **vertexBuffer) {
+void Scene::UpdateTriangles() {
 	size_t vBufferIndex = 0;
 
 	for (size_t i = 0; i < this->numObjects; i++) {
 		SceneObject object = this->objects[i];
 
 		for (float val : object.geometry->vertices) {
-			(*vertexBuffer)[vBufferIndex++] = (GLfloat)(val);
+			this->vertexBuffer[vBufferIndex++] = (GLfloat)(val);
 		}
 	}
 }

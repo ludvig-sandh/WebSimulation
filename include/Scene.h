@@ -27,7 +27,7 @@ public:
 	
 	void Update();
 	void BuildTriangles();
-	void UpdateTriangles(GLfloat **vertexBuffer);
+	void UpdateTriangles();
 
 	void MousePressed(double x, double y);
 	void MouseReleased(double x, double y);
