@@ -49,12 +49,13 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile) {
 	glDeleteShader(fragmentShader);
 }
 
-void Shader::Activate() {
-	glUseProgram(ID);
+Shader::~Shader() {
+	glDeleteProgram(ID);
+    std::cout << "Shader has been deconstructed" << std::endl;
 }
 
-void Shader::Delete() {
-	glDeleteProgram(ID);
+void Shader::Activate() {
+	glUseProgram(ID);
 }
 
 // Checks if the different Shaders have compiled properly

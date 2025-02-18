@@ -7,10 +7,10 @@ class EBO {
 public:
 	GLuint ID;
 	EBO(GLuint* incides, GLsizeiptr size);
+    ~EBO();
 
 	void Bind();
 	void Unbind();
-	void Delete();
 };
 
 

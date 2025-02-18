@@ -18,6 +18,7 @@ GLfloat *vertexBuffer; // X, Y, Z, R, G, B repeating for each vertex
 GLuint *indexBuffer; // v0, v1, v2 (for a triangle) repeating for each triangle
 size_t vertexBufferSize, indexBufferSize;
 
+// Finds the mouse coordinates and maps them into the range [-1, 1]
 void GetCursorTranslated(GLFWwindow *window, double &mouseX, double &mouseY) {
 	glfwGetCursorPos(window, &mouseX, &mouseY);
 	mouseX = mouseX / width * 2.0 - 1.0;
@@ -49,12 +50,13 @@ GLFWwindow *initWindow() {
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// Create a GLFWwindow object width x height px, naming it "WebSimulation"
+	// Create a GLFW window object width x height px, naming it "WebSimulation"
 	GLFWwindow *window = glfwCreateWindow(width, height, "WebSimulation", NULL, NULL);
 
 	// Error check if the window fails to create
-	if (window == NULL) {
-		return NULL;
+	if (!window) {
+        glfwTerminate();
+		return nullptr;
 	}
 
 	// Introduce the window into the current context
@@ -73,9 +75,10 @@ GLFWwindow *initWindow() {
 int main() {
 	// Create GUI window
 	GLFWwindow* window = initWindow();
-	if (window == NULL) {
+	if (!window) {
 		std::cout << "Failed to create GLFW window" << std::endl;
-		return -1;
+        std::cin.get();
+        return EXIT_FAILURE;
 	}
 
 	// Create Scene with grid of objects 
@@ -96,6 +99,8 @@ int main() {
 
         // Terminate GLFW before ending the program
         glfwTerminate();
+
+        shaderProgram.reset();
 
         std::cin.get();
 
@@ -125,7 +130,6 @@ int main() {
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window)) {
-
 		// Here we update the scene
 		scene.Update();
 		scene.UpdateTriangles(&vertexBuffer);
@@ -152,12 +156,6 @@ int main() {
 		// Take care of all GLFW events
 		glfwPollEvents();
 	}
-
-	// Delete all objects we created so far
-	VAO1.Delete();
-	VBO1.Delete();
-	EBO1.Delete();
-	shaderProgram->Delete();
 
 	// Deletes the memory allocated vertices and indices pointers
 	scene.Destroy(vertexBuffer, indexBuffer);

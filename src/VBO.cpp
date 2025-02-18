@@ -5,6 +5,10 @@ VBO::VBO() {
 	glGenBuffers(1, &ID);
 }
 
+VBO::~VBO() {
+	glDeleteBuffers(1, &ID);
+}
+
 void VBO::Link(GLfloat* vertices, GLsizeiptr size) {
 	glBindBuffer(GL_ARRAY_BUFFER, ID); // There are different buffer types
 	// Introduce the vertices into the VBO
@@ -17,8 +21,4 @@ void VBO::Bind() {
 
 void VBO::Unbind() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void VBO::Delete() {
-	glDeleteBuffers(1, &ID);
 }
