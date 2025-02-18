@@ -2,7 +2,7 @@
 #define SCENE_OBJECT_CLASS_H
 
 #include <vector>
-#include "sceneGeometryClass.h"
+#include "SceneGeometry.h"
 
 class SceneObject {
 public:

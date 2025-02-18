@@ -2,7 +2,7 @@
 #define SCENE_CLASS_H
 
 #include <GLFW/glfw3.h>
-#include "sceneObjectClass.h"
+#include "SceneObject.h"
 
 class Scene {
 public:

@@ -1,7 +1,7 @@
 # Compiler and Flags
 CXX = g++
 CC = gcc
-CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude -Iinclude/external
+CXXFLAGS = -Wall -Wextra -std=c++20
 CCFLAGS = -c -Wall -Wextra
 INCLUDE_EXTERNAL_DIR = -Iinclude/external
 INCLUDE_DIR = -Iinclude

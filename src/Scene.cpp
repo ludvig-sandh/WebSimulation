@@ -1,4 +1,4 @@
-#include "sceneClass.h"
+#include "Scene.h"
 #include <iostream>
 #include <cassert>
 #include <cmath>

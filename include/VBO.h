@@ -4,14 +4,14 @@
 #include <glad/glad.h>
 
 class VBO {
-	public:
-		GLuint ID;
-		VBO();
+public:
+    GLuint ID;
+    VBO();
 
-		void Link(GLfloat* vertices, GLsizeiptr size);
-		void Bind();
-		void Unbind();
-		void Delete();
+    void Link(GLfloat* vertices, GLsizeiptr size);
+    void Bind();
+    void Unbind();
+    void Delete();
 };
 
 

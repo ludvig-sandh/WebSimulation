@@ -3,11 +3,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "shaderClass.h"
+#include "Shader.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
-#include "sceneClass.h"
+#include "Scene.h"
 
 // Variables for window size so we can easily modify it
 int width = 2000;

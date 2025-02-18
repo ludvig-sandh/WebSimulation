@@ -1,4 +1,4 @@
-#include "sceneGeometryClass.h"
+#include "SceneGeometry.h"
 #include <cmath>
 
 // Translates the position of a scene geometry object

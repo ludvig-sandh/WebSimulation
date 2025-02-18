@@ -1,4 +1,4 @@
-#include "sceneObjectClass.h"
+#include "SceneObject.h"
 
 /*
 // SceneObject constructor
