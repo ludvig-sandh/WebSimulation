@@ -1,11 +1,10 @@
 #include "Scene.h"
+
 #include <iostream>
 #include <cassert>
 #include <cmath>
 
-Scene::Scene(GLFWwindow* window, int rows, int cols) {
-	this->window = window;
-
+Scene::Scene(int rows, int cols) {
 	this->rows = rows;
 	this->cols = cols;
 	this->numObjects = rows * cols;
@@ -27,18 +26,19 @@ Scene::~Scene() {
 }
 
 void Scene::CreateGrid() {
-	float width = 1.0f / this->cols * 1.5;
-	float height = 1.0f / this->rows * 1.5;
+    Vec2 size, position;
+	size.x = 1.0f / this->cols * 1.5;
+	size.y = 1.0f / this->rows * 1.5;
 	float ygap = 2.0f / (this->rows + 1);
 	float xgap = 2.0f / (this->cols + 1);
 	for (int row = 0; row < this->rows; row++) {
-		float y = -1.0f + ygap * (row + 1);
+		position.y = -1.0f + ygap * (row + 1);
 		for (int col = 0; col < this->cols; col++) {
-			float x = -1.0f + xgap * (col + 1);
+			position.x = -1.0f + xgap * (col + 1);
 			size_t index = this->GetGridIndex(row, col);
 
 			SceneObject object;
-			object.geometry = new SceneGeometryRect(x, y, width, height, 0.3f, 0.3f, 1.0f);
+			object.geometry = new SceneGeometryRect(position, size, 0.3f, 0.3f, 1.0f);
 
 			// Now let's connect neighbours
 			if (row) {
@@ -48,11 +48,11 @@ void Scene::CreateGrid() {
 			}
 			else {
 				// Add static edge point above
-				object.AddStaticNeighbour(x, y - ygap);
+				object.AddStaticNeighbour(Vec2(position.x, position.y - ygap));
 			}
 			if (row == this->rows - 1) {
 				// Add static edge point below
-				object.AddStaticNeighbour(x, y + ygap);
+				object.AddStaticNeighbour(Vec2(position.x, position.y + ygap));
 			}
 
 			if (col) {
@@ -62,11 +62,11 @@ void Scene::CreateGrid() {
 			}
 			else {
 				// Add static edge point to left
-				object.AddStaticNeighbour(x - xgap, y);
+				object.AddStaticNeighbour(Vec2(position.x - xgap, position.y));
 			}
 			if (col == this->cols - 1) {
 				// Add static edge point to right
-				object.AddStaticNeighbour(x + xgap, y);
+				object.AddStaticNeighbour(Vec2(position.x + xgap, position.y));
 			}
 
 			this->objects.push_back(object);
@@ -82,12 +82,10 @@ void Scene::Update() {
 	for (SceneObject& object : this->objects) {
 		// Check if this object is currently being dragged by user
 		if (object.isStatic) {
-			float dx = this->mouseX - this->lastMouseX;
-			float dy = this->mouseY - this->lastMouseY;
-			object.geometry->TranslatePosition(dx, dy);
+            Vec2 translation = m_currentMouseLocation - m_lastMousePressedLocation;
+			object.geometry->TranslatePosition(translation);
 
-			this->lastMouseX = this->mouseX;
-			this->lastMouseY = this->mouseY;
+            m_lastMousePressedLocation = m_currentMouseLocation;
 		}else {
 			object.UpdateGeometry(this->objects);
 		}
@@ -96,20 +94,20 @@ void Scene::Update() {
 		float color1;
 		float color2;
 
-		float dx = object.geometry->x - object.geometry->startX;
-		float dy = object.geometry->y - object.geometry->startY;
+		float dx = object.geometry->m_position.x - object.geometry->m_startPosition.x;
+		float dy = object.geometry->m_position.y - object.geometry->m_startPosition.y;
 		float dist = pow(dx * dx + dy * dy, 0.5f);
 		color1 = std::max(0.0f, std::min(1.0f, dist / 0.1f));
 
-		dx = object.geometry->x - object.geometry->lastX;
-		dy = object.geometry->y - object.geometry->lastY;
+		dx = object.geometry->m_position.x - object.geometry->m_lastPosition.x;
+		dy = object.geometry->m_position.y - object.geometry->m_lastPosition.y;
 		dist = pow(dx * dx + dy * dy, 0.5f);
 		color2 = std::max(0.0f, std::min(1.0f, dist / 0.005f));
 
 		object.geometry->SetColor(color1, color2, 1.0f - color1);
 
-		object.geometry->lastX = object.geometry->x;
-		object.geometry->lastY = object.geometry->y;
+		object.geometry->m_lastPosition.x = object.geometry->m_position.x;
+		object.geometry->m_lastPosition.y = object.geometry->m_position.y;
 	}
 }
 
@@ -151,26 +149,24 @@ void Scene::UpdateTriangles() {
 	}
 }
 
-void Scene::MousePressed(double x, double y) {
-	this->mouseX = x;
-	this->mouseY = y;
+
+void Scene::MousePressed(Vec2 mouseLocation) {
+    m_currentMouseLocation = mouseLocation;
 	if (this->isMousePressed) return;
 	this->isMousePressed = true;
-	this->lastMouseX = x;
-	this->lastMouseY = y;
+    m_lastMousePressedLocation = mouseLocation;
 
 	for (SceneObject& object : this->objects) {
 		// Check if this object is currently being dragged by user
-		if (object.geometry->Contains(x, y)) {
+		if (object.geometry->Contains(mouseLocation)) {
 			// Set static state for this object
 			object.isStatic = true;
 		}
 	}
 }
 
-void Scene::MouseReleased(double x, double y) {
-	this->mouseX = x;
-	this->mouseY = y;
+void Scene::MouseReleased(Vec2 mouseLocation) {
+    m_currentMouseLocation = mouseLocation;
 	if (!this->isMousePressed) return;
 	this->isMousePressed = false;
 

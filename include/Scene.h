@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 #include "SceneObject.h"
+#include "Vec2.h"
 
 class Scene {
 public:
@@ -11,15 +12,13 @@ public:
     GLuint *indexBuffer; // v0, v1, v2 (for a triangle) repeating for each triangle
     size_t vertexBufferSize, indexBufferSize;
 
-	GLFWwindow *window;
 	std::vector<SceneObject> objects;
 	int rows, cols;
 	size_t numVertices = 0, numIndices = 0, numObjects = 0;
-	double mouseX = 0, mouseY = 0;
-	double lastMouseX = 0, lastMouseY = 0;
+    Vec2 m_currentMouseLocation, m_lastMousePressedLocation;
 	bool isMousePressed = false;
 
-	Scene(GLFWwindow *window, int rows, int cols);
+	Scene(int rows, int cols);
     ~Scene();
 
 	void CreateGrid();
@@ -29,8 +28,11 @@ public:
 	void BuildTriangles();
 	void UpdateTriangles();
 
-	void MousePressed(double x, double y);
-	void MouseReleased(double x, double y);
+	void MousePressed(Vec2 mouseLocation);
+	void MouseReleased(Vec2 mouseLocation);
+private:
+    int width, height;
+
 };
 
 #endif

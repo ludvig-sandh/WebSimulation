@@ -1,4 +1,5 @@
 #include "SceneObject.h"
+#include "Vec2.h"
 
 /*
 // SceneObject constructor
@@ -11,8 +12,8 @@ void SceneObject::AddNeighbour(size_t neighbourIndex) {
 	this->neighbours.push_back(neighbourIndex);
 }
 
-void SceneObject::AddStaticNeighbour(float x, float y) {
-	this->staticNeighbours.push_back(std::make_pair(x, y));
+void SceneObject::AddStaticNeighbour(Vec2 neighbor) {
+	this->staticNeighbours.push_back(neighbor);
 }
 
 // Updates the position of the scene object by moving it
@@ -22,18 +23,22 @@ void SceneObject::UpdateGeometry(std::vector<SceneObject>& objects) {
 	// are dragging
 	float xAvg = 0;
 	float yAvg = 0;
-	for (auto& neighbourIdx : this->neighbours) {
-		xAvg += (objects[neighbourIdx].geometry->x - this->geometry->x);
-		yAvg += (objects[neighbourIdx].geometry->y - this->geometry->y);
+	for (auto &neighbourIdx : this->neighbours) {
+		xAvg += (objects[neighbourIdx].geometry->m_position.x - this->geometry->m_position.x);
+		yAvg += (objects[neighbourIdx].geometry->m_position.y - this->geometry->m_position.y);
 	}
-	for (auto& point : this->staticNeighbours) {
-		xAvg += point.first - this->geometry->x;
-		yAvg += point.second - this->geometry->y;
+	for (Vec2 &point : this->staticNeighbours) {
+		xAvg += point.x - this->geometry->m_position.x;
+		yAvg += point.y - this->geometry->m_position.y;
 	}
 
 	// alpha multiplies the distance to move.
 	// Can be seen as an acceleration coefficient
 	float alpha = 0.495;
 	// alpha = 0.5f; // Also really cool but starts to get out of hand
-	this->geometry->TranslatePosition(xAvg * alpha, yAvg * alpha);
+
+    Vec2 translation;
+    translation.x = xAvg * alpha;
+    translation.y = yAvg * alpha;
+	this->geometry->TranslatePosition(translation);
 }

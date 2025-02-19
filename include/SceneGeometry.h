@@ -2,26 +2,25 @@
 #define SCENE_GEOMETRY_CLASS_H
 
 #include <vector>
+#include "Vec2.h"
 
 class SceneGeometry {
 public:
-	float x = 0, y = 0;
-	float startX, startY;
-	float lastX, lastY;
+    Vec2 m_position, m_startPosition, m_lastPosition;
 	size_t numVertices = 0, numIndices = 0;
 	std::vector<float> vertices;
 	std::vector<int> indices;
-	void TranslatePosition(float dx, float dy);
+	void TranslatePosition(const Vec2 &translation);
 	void SetColor(float red, float green, float blue);
-	virtual bool Contains(float xOther, float yOther) = 0;
+	virtual bool Contains(const Vec2 &point) = 0;
 };
 
 class SceneGeometryRect : public SceneGeometry {
 public:
-	float width, height;
-	SceneGeometryRect(float x, float y, float width, float height, 
-					  float red, float green, float blue);
-	bool Contains(float xOther, float yOther);
+    Vec2 m_size;
+	SceneGeometryRect(const Vec2 &position, const Vec2 &size,
+        float red, float green, float blue);
+	bool Contains(const Vec2 &point);
 };
 
 #endif

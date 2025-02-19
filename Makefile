@@ -3,6 +3,8 @@ CXX = g++
 CC = gcc
 CXXFLAGS = -Wall -Wextra -std=c++20
 CCFLAGS = -c -Wall -Wextra
+DEBUG_FLAGS = -g -Og
+
 INCLUDE_EXTERNAL_DIR = -Iinclude/external
 INCLUDE_DIR = -Iinclude
 LIBRARY_DIR = -Llib
@@ -24,8 +26,15 @@ OBJ_C = $(patsubst $(SRC_EXTERNAL_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRC_C))
 # Output Executable
 TARGET = $(BIN_DIR)/websimulation
 
-# Default target
+# Default target (release mode)
+all: CXXFLAGS += -O2  # Optimization for release build
+all: CCFLAGS += -O2
 all: $(TARGET)
+
+# Debug target
+debug: CXXFLAGS += $(DEBUG_FLAGS)
+debug: CCFLAGS += $(DEBUG_FLAGS)
+debug: $(TARGET)
 
 # Linking Step
 $(TARGET): $(OBJ_CPP) $(OBJ_C)

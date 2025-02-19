@@ -1,7 +1,12 @@
 #include "Shader.h"
-#include <cstring>
 
-std::string get_file_contents(const char* filename) {
+#include <cstring>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <cerrno>
+
+std::string get_file_contents(const std::filesystem::path &filename) {
 	std::ifstream in(filename, std::ios::binary);
 	if (in) {
 		std::string contents;
@@ -12,10 +17,10 @@ std::string get_file_contents(const char* filename) {
 		in.close();
 		return contents;
 	}
-	throw std::runtime_error("ERROR: Shader file coult not be found: " + std::string(strerror(errno)));;
+	throw std::ios_base::failure("ERROR: Shader file could not be found: " + std::string(strerror(errno)));;
 }
 
-Shader::Shader(const char* vertexFile, const char* fragmentFile) {
+Shader::Shader(const std::filesystem::path &vertexFile, const std::filesystem::path &fragmentFile) {
     std::string vertexCode = get_file_contents(vertexFile);
     std::string fragmentCode = get_file_contents(fragmentFile);
 
