@@ -1,10 +1,10 @@
-#include "Shader.h"
-
 #include <cstring>
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include <cerrno>
+#include <iostream>
+
+#include "Shader.h"
 
 std::string get_file_contents(const std::filesystem::path &filename) {
 	std::ifstream in(filename, std::ios::binary);
@@ -17,7 +17,7 @@ std::string get_file_contents(const std::filesystem::path &filename) {
 		in.close();
 		return contents;
 	}
-	throw std::ios_base::failure("ERROR: Shader file could not be found: " + std::string(strerror(errno)));;
+	throw std::ios_base::failure("ERROR: Shader file could not be found: " + std::string(strerror(errno)));
 }
 
 Shader::Shader(const std::filesystem::path &vertexFile, const std::filesystem::path &fragmentFile) {
@@ -56,7 +56,6 @@ Shader::Shader(const std::filesystem::path &vertexFile, const std::filesystem::p
 
 Shader::~Shader() {
 	glDeleteProgram(ID);
-    std::cout << "Shader has been deconstructed" << std::endl;
 }
 
 void Shader::Activate() {
@@ -77,6 +76,7 @@ void Shader::compileErrors(unsigned int shader, const char* type)
 		{
 			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
 			std::cout << "SHADER_COMPILATION_ERROR for:" << type << "\n" << infoLog << std::endl;
+            exit(EXIT_FAILURE);
 		}
 	}
 	else
@@ -86,6 +86,7 @@ void Shader::compileErrors(unsigned int shader, const char* type)
 		{
 			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
 			std::cout << "SHADER_LINKING_ERROR for:" << type << "\n" << infoLog << std::endl;
+            exit(EXIT_FAILURE);
 		}
 	}
 }

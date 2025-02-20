@@ -10,4 +10,7 @@ struct Vec2 {
     Vec2 operator-(const Vec2 &other);
     void operator+=(const Vec2 &other);
     void operator-=(const Vec2 &other);
+    
+    Vec2 operator*(const float &scalar);
+    void operator*=(const float &scalar);
 };

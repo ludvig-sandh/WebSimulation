@@ -1,5 +1,4 @@
-#ifndef WINDOW_EXCEPTION_H
-#define WINDOW_EXCEPTION_H
+#pragma once
 
 #include <exception>
 #include <string>
@@ -14,5 +13,3 @@ public:
         return message.c_str();
     }
 };
-
-#endif

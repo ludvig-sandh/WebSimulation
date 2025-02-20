@@ -1,5 +1,4 @@
 #include "EBO.h"
-#include <iostream>
 
 EBO::EBO() {
 	glGenBuffers(1, &ID);

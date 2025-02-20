@@ -1,8 +1,8 @@
+#include <cmath>
+
 #include "SceneObject.h"
 #include "Vec2.h"
 #include "Vec3.h"
-
-#include <cmath>
 
 SceneObject::SceneObject(Vec2 position) : position(position) {}
 

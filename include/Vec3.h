@@ -10,4 +10,7 @@ struct Vec3 {
     Vec3 operator-(const Vec3 &other);
     void operator+=(const Vec3 &other);
     void operator-=(const Vec3 &other);
+
+    Vec3 operator*(const float &scalar);
+    void operator*=(const float &scalar);
 };

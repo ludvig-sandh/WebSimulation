@@ -1,9 +1,8 @@
-#ifndef SHADER_CLASS_H
-#define SHADER_CLASS_H
+#pragma once
 
-#include <glad/glad.h>
-#include <string>
 #include <filesystem>
+#include <string>
+#include "glad/glad.h"
 
 std::string get_file_contents(const std::filesystem::path &filename);
 
@@ -23,5 +22,3 @@ class Shader {
 		// Checks if the different Shaders have compiled properly
 		void compileErrors(unsigned int shader, const char* type);
 };
-
-#endif

@@ -1,7 +1,7 @@
+#include <cmath>
+
 #include "SceneGeometry.h"
 #include "Vec2.h"
-
-#include <cmath>
 
 // Translates the position of a scene geometry object
 void SceneGeometry::TranslatePosition(const Vec2 &translation) {

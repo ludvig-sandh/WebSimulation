@@ -1,5 +1,4 @@
-#ifndef SCENE_OBJECT_CLASS_H
-#define SCENE_OBJECT_CLASS_H
+#pragma once
 
 #include <vector>
 #include "SceneGeometry.h"
@@ -27,5 +26,3 @@ public:
     std::vector<int> GetIndices() const override;
     bool Contains(const Vec2 &point) const override;
 };
-
-#endif

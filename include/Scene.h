@@ -1,9 +1,8 @@
-#ifndef SCENE_CLASS_H
-#define SCENE_CLASS_H
+#pragma once
 
 #include <memory>
-#include <GLFW/glfw3.h>
 
+#include "GLFW/glfw3.h"
 #include "SceneObject.h"
 #include "Vec2.h"
 
@@ -11,7 +10,7 @@ class Scene {
 public:
 	Scene();
     
-	void Update();
+	void Update(float timeDelta);
 	void ComputeTriangles();
     GLfloat *getVertexBuffer();
     GLuint *getIndexBuffer();
@@ -28,5 +27,3 @@ private:
     int width, height;
     std::vector<std::unique_ptr<SceneObject>> m_objects;
 };
-
-#endif

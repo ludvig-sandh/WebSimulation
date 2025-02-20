@@ -1,7 +1,6 @@
-#ifndef EBO_CLASS_H
-#define EBO_CLASS_H
+#pragma once
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
 class EBO {
 public:
@@ -13,6 +12,3 @@ public:
 	void Bind();
 	void Unbind();
 };
-
-
-#endif

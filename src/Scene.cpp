@@ -1,8 +1,8 @@
-#include "Scene.h"
-
 #include <iostream>
 #include <cassert>
 #include <cmath>
+
+#include "Scene.h"
 
 Scene::Scene() {
     // Example code for some rectangles
@@ -17,12 +17,13 @@ Scene::Scene() {
     }
 }
 
-void Scene::Update() {
+void Scene::Update(float timeDelta) {
     // Example code for some rectangles
     for (std::unique_ptr<SceneObject> &object : m_objects) {
         float dx = (0.5 - object->position.x - object->position.y) * (-object->position.x + object->position.y);
         float dy = (object->position.x + object->position.y) * (-0.5 - object->position.x + object->position.y);
-        object->position += Vec2(dx * 0.0001, dy * 0.0001);
+        
+        object->position += Vec2(dx * 0.1, dy * 0.1) * timeDelta;
         if (object->position.x > 1.05) object->position.x -= 2.1;
         if (object->position.x < -1.05) object->position.x += 2.1;
         if (object->position.y > 1.05) object->position.y -= 2.1;

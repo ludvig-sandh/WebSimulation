@@ -27,3 +27,13 @@ void Vec3::operator-=(const Vec3 &other) {
     y -= other.y;
     z -= other.z;
 }
+
+Vec3 Vec3::operator*(const float &scalar) {
+    return Vec3(x * scalar, y * scalar, z * scalar);
+}
+
+void Vec3::operator*=(const float &scalar) {
+    x *= scalar;
+    y *= scalar;
+    z *= scalar;
+}

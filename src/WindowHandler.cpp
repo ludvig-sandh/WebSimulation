@@ -1,8 +1,12 @@
 #include <iostream>
-#include <glad/glad.h>
+#include <chrono>
+#include <thread>
 
+#include "glad/glad.h"
 #include "WindowHandler.h"
 #include "WindowException.h"
+#include "FPSTracker.h"
+#include "Config.h"
 
 // Since m_window (unique_ptr) needs a custom destroyer function, we have to specify it in the initializer list
 WindowHandler::WindowHandler(const int screenWidth, const int screenHeight) : m_window(nullptr, glfwDestroyWindow) {
@@ -39,9 +43,24 @@ void WindowHandler::LoadShaders(const std::filesystem::path &vertexShaderPath, c
 
 // Main while loop
 void WindowHandler::RunMainLoop() {
-	while (!glfwWindowShouldClose(m_window.get())) {
+    float minFrameTime = 1.0 / MAX_FPS;
+    FPSTracker fpsTracker;
+    while (!glfwWindowShouldClose(m_window.get())) {
+        float timeFromLastFrame = fpsTracker.GetTimeFromLastFrame();
+        if (timeFromLastFrame < minFrameTime) {
+            // A bit of a dumb way to accurately sleep with <1ms precision
+            static constexpr std::chrono::duration<double> minSleepDuration(0);
+            std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
+            while (std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count() < minFrameTime - timeFromLastFrame) {
+                std::this_thread::sleep_for(minSleepDuration);
+            }
+        }
+
+        // Keep track of frame times
+        timeFromLastFrame = fpsTracker.RegisterNewFrame();
+
 		// Here we update the scene
-		m_scene->Update();
+		m_scene->Update(timeFromLastFrame);
 		m_scene->ComputeTriangles();
         
 		// Link object to vertices

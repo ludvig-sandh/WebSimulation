@@ -1,16 +1,15 @@
-#ifndef WINDOW_HANDLER_H
-#define WINDOW_HANDLER_H
+#pragma once
 
+#include <memory>
+#include <filesystem>
+
+#include "GLFW/glfw3.h"
 #include "Scene.h"
 #include "Vec2.h"
 #include "Shader.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
-
-#include <memory>
-#include <filesystem>
-#include <GLFW/glfw3.h>
 
 class WindowHandler {
 private:
@@ -27,12 +26,10 @@ public:
     ~WindowHandler();
     void LoadShaders(const std::filesystem::path &pathToVertexShader, const std::filesystem::path &pathToFragmentShader);
     void RunMainLoop();
-    private:
+private:
     void InitWindow();
     void BindBuffers();
     void CreateScene();
     void HandleInteractions();
     void NormalizeCursorCoordinates(Vec2 &mouseX);
 };
-
-#endif

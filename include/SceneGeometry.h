@@ -1,5 +1,4 @@
-#ifndef SCENE_GEOMETRY_CLASS_H
-#define SCENE_GEOMETRY_CLASS_H
+#pragma once
 
 #include <vector>
 #include "Vec2.h"
@@ -22,5 +21,3 @@ public:
         float red, float green, float blue);
 	bool Contains(const Vec2 &point);
 };
-
-#endif
