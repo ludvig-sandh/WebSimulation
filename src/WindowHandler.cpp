@@ -42,10 +42,13 @@ void WindowHandler::RunMainLoop() {
 	while (!glfwWindowShouldClose(m_window.get())) {
 		// Here we update the scene
 		m_scene->Update();
-		m_scene->UpdateTriangles();
+		m_scene->ComputeTriangles();
         
 		// Link object to vertices
-		m_vbo->Link(m_scene->vertexBuffer, m_scene->vertexBufferSize);
+		m_vbo->Link(m_scene->getVertexBuffer(), m_scene->getVertexBufferCount() * sizeof(GLfloat));
+
+        // Link object to indices
+        m_ebo->Link(m_scene->getIndexBuffer(), m_scene->getIndexBufferCount() * sizeof(GLuint));
         
 		// Redraw background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -58,7 +61,9 @@ void WindowHandler::RunMainLoop() {
         
 		glUniform1f(m_uniID, 0.0f);
 		m_vao->Bind();
-		glDrawElements(GL_TRIANGLES, m_scene->indexBufferSize / sizeof(GLfloat), GL_UNSIGNED_INT, 0);
+
+        // Draw all triangles
+		glDrawElements(GL_TRIANGLES, m_scene->getIndexBufferCount(), GL_UNSIGNED_INT, 0);
         
 		// Make sure to swap image buffers to display the correct frame
 		glfwSwapBuffers(m_window.get());
@@ -114,7 +119,8 @@ void WindowHandler::BindBuffers() {
     m_vbo = std::make_unique<VBO>();
 
 	// Generates Element Buffer Object and links it to indices
-	m_ebo = std::make_unique<EBO>(m_scene->indexBuffer, m_scene->indexBufferSize);
+	m_ebo = std::make_unique<EBO>();
+    m_ebo->Bind();
 
 	// Links VBO to 
 	m_vao->LinkAttrib(*m_vbo, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
@@ -129,10 +135,7 @@ void WindowHandler::BindBuffers() {
 }
 
 void WindowHandler::CreateScene() {
-    m_scene = std::make_unique<Scene>(70, 140);
-    
-	// Allocate buffer sizes and fill them with data
-	m_scene->BuildTriangles();
+    m_scene = std::make_unique<Scene>();
 }
 
 void WindowHandler::HandleInteractions() {

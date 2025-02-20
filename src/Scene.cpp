@@ -4,174 +4,69 @@
 #include <cassert>
 #include <cmath>
 
-Scene::Scene(int rows, int cols) {
-	this->rows = rows;
-	this->cols = cols;
-	this->numObjects = rows * cols;
-
-	this->CreateGrid();
-
-	// Now when the creator has added all objects, count all
-	// vertices and indices in the scene
-	for (SceneObject& object : this->objects) {
-		this->numVertices += object.geometry->numVertices;
-		this->numIndices += object.geometry->numIndices;
-	}
-}
-
-// Deletes the memory allocated vertices and indices pointers
-Scene::~Scene() {
-	free(this->vertexBuffer);
-	free(this->indexBuffer);
-}
-
-void Scene::CreateGrid() {
-    Vec2 size, position;
-	size.x = 1.0f / this->cols * 1.5;
-	size.y = 1.0f / this->rows * 1.5;
-	float ygap = 2.0f / (this->rows + 1);
-	float xgap = 2.0f / (this->cols + 1);
-	for (int row = 0; row < this->rows; row++) {
-		position.y = -1.0f + ygap * (row + 1);
-		for (int col = 0; col < this->cols; col++) {
-			position.x = -1.0f + xgap * (col + 1);
-			size_t index = this->GetGridIndex(row, col);
-
-			SceneObject object;
-			object.geometry = new SceneGeometryRect(position, size, 0.3f, 0.3f, 1.0f);
-
-			// Now let's connect neighbours
-			if (row) {
-				int neighbourIndex = this->GetGridIndex(row - 1, col);
-				this->objects[neighbourIndex].AddNeighbour(index);
-				object.AddNeighbour(neighbourIndex);
-			}
-			else {
-				// Add static edge point above
-				object.AddStaticNeighbour(Vec2(position.x, position.y - ygap));
-			}
-			if (row == this->rows - 1) {
-				// Add static edge point below
-				object.AddStaticNeighbour(Vec2(position.x, position.y + ygap));
-			}
-
-			if (col) {
-				int neighbourIndex = this->GetGridIndex(row, col - 1);
-				this->objects[neighbourIndex].AddNeighbour(index);
-				object.AddNeighbour(neighbourIndex);
-			}
-			else {
-				// Add static edge point to left
-				object.AddStaticNeighbour(Vec2(position.x - xgap, position.y));
-			}
-			if (col == this->cols - 1) {
-				// Add static edge point to right
-				object.AddStaticNeighbour(Vec2(position.x + xgap, position.y));
-			}
-
-			this->objects.push_back(object);
-		}
-	}
-}
-
-int Scene::GetGridIndex(int row, int col) {
-	return row * this->cols + col;
+Scene::Scene() {
+    // Example code for some rectangles
+    for (float x = -1.05f; x < 1.0f; x += 0.03f) {
+        for (float y = -1.05f; y < 1.0f; y += 0.03f) {
+            float red = fmod((x + y) * (x + y), 1.0f);
+            float green = fmod((x - y) * (x + y), 1.0f);
+            float blue = fmod((x - y) * (x - y), 1.0f);
+            std::unique_ptr<SceneRect> rect = std::make_unique<SceneRect>(Vec2(x, y), Vec2(0.05, 0.05), red, green, blue);
+            m_objects.push_back(std::move(rect));
+        }
+    }
 }
 
 void Scene::Update() {
-	for (SceneObject& object : this->objects) {
-		// Check if this object is currently being dragged by user
-		if (object.isStatic) {
-            Vec2 translation = m_currentMouseLocation - m_lastMousePressedLocation;
-			object.geometry->TranslatePosition(translation);
-
-            m_lastMousePressedLocation = m_currentMouseLocation;
-		}else {
-			object.UpdateGeometry(this->objects);
-		}
-
-		// Change color based on how far from start each object is
-		float color1;
-		float color2;
-
-		float dx = object.geometry->m_position.x - object.geometry->m_startPosition.x;
-		float dy = object.geometry->m_position.y - object.geometry->m_startPosition.y;
-		float dist = pow(dx * dx + dy * dy, 0.5f);
-		color1 = std::max(0.0f, std::min(1.0f, dist / 0.1f));
-
-		dx = object.geometry->m_position.x - object.geometry->m_lastPosition.x;
-		dy = object.geometry->m_position.y - object.geometry->m_lastPosition.y;
-		dist = pow(dx * dx + dy * dy, 0.5f);
-		color2 = std::max(0.0f, std::min(1.0f, dist / 0.005f));
-
-		object.geometry->SetColor(color1, color2, 1.0f - color1);
-
-		object.geometry->m_lastPosition.x = object.geometry->m_position.x;
-		object.geometry->m_lastPosition.y = object.geometry->m_position.y;
-	}
+    // Example code for some rectangles
+    for (std::unique_ptr<SceneObject> &object : m_objects) {
+        float dx = (0.5 - object->position.x - object->position.y) * (-object->position.x + object->position.y);
+        float dy = (object->position.x + object->position.y) * (-0.5 - object->position.x + object->position.y);
+        object->position += Vec2(dx * 0.0001, dy * 0.0001);
+        if (object->position.x > 1.05) object->position.x -= 2.1;
+        if (object->position.x < -1.05) object->position.x += 2.1;
+        if (object->position.y > 1.05) object->position.y -= 2.1;
+        if (object->position.y < -1.05) object->position.y += 2.1;
+    }
 }
 
-void Scene::BuildTriangles() {
-	this->vertexBufferSize = sizeof(GLfloat) * this->numVertices * 6;
-	this->indexBufferSize = sizeof(GLuint) * this->numIndices * 3;
-	this->vertexBuffer = (GLfloat*)malloc(vertexBufferSize);
-	this->indexBuffer = (GLuint*)malloc(indexBufferSize);
-	if (!this->vertexBuffer || !this->indexBuffer) {
-		std::cout << "Malloc memory allocation failed." << std::endl;
-		exit(0);
-	}
-	size_t vBufferIndex = 0, iBufferIndex = 0;
-
-	for (size_t i = 0; i < this->numObjects; i++) {
-
-		SceneObject object = this->objects[i];
-
-		for (int val : object.geometry->indices) {
-			this->indexBuffer[iBufferIndex++] = (GLuint)(vBufferIndex / 6 + val);
-		}
-
-		for (float val : object.geometry->vertices) {
-			assert(vBufferIndex < vertexBufferSize);
-			this->vertexBuffer[vBufferIndex++] = (GLfloat)(val);
-		}
-	}
-}
-
-void Scene::UpdateTriangles() {
+void Scene::ComputeTriangles() {
+    // TODO: Don't rebuild buffers every single frame.
 	size_t vBufferIndex = 0;
+    
+    m_vertexBuffer.clear();
+    m_indexBuffer.clear();
 
-	for (size_t i = 0; i < this->numObjects; i++) {
-		SceneObject object = this->objects[i];
-
-		for (float val : object.geometry->vertices) {
-			this->vertexBuffer[vBufferIndex++] = (GLfloat)(val);
+	for (size_t i = 0; i < m_objects.size(); i++) {
+		for (int val : m_objects[i]->GetIndices()) {
+            m_indexBuffer.push_back((GLuint)(vBufferIndex++ / 6 * 4 + val));
+		}
+		for (float val : m_objects[i]->GetVertices()) {
+            m_vertexBuffer.push_back((GLfloat)(val));
 		}
 	}
 }
 
+GLfloat *Scene::getVertexBuffer() {
+    return this->m_vertexBuffer.data();
+}
+
+GLuint *Scene::getIndexBuffer() {
+    return this->m_indexBuffer.data();
+}
+
+int Scene::getVertexBufferCount() {
+    return this->m_vertexBuffer.size();
+}
+
+int Scene::getIndexBufferCount() {
+    return this->m_indexBuffer.size();
+}
 
 void Scene::MousePressed(Vec2 mouseLocation) {
-    m_currentMouseLocation = mouseLocation;
-	if (this->isMousePressed) return;
-	this->isMousePressed = true;
-    m_lastMousePressedLocation = mouseLocation;
-
-	for (SceneObject& object : this->objects) {
-		// Check if this object is currently being dragged by user
-		if (object.geometry->Contains(mouseLocation)) {
-			// Set static state for this object
-			object.isStatic = true;
-		}
-	}
+    
 }
 
 void Scene::MouseReleased(Vec2 mouseLocation) {
-    m_currentMouseLocation = mouseLocation;
-	if (!this->isMousePressed) return;
-	this->isMousePressed = false;
-
-	// If an object was dragged before, let it move freely now
-	for (SceneObject& object : this->objects) {
-		object.isStatic = false;
-	}
+    
 }
