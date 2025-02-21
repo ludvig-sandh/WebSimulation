@@ -1,3 +1,4 @@
+#include <cmath>
 #include "Vec2.h"
 
 Vec2 Vec2::operator+(const Vec2 &other) const {
@@ -67,4 +68,8 @@ bool Vec2::operator==(const Vec2 &other) const {
 
 bool Vec2::operator!=(const Vec2 &other) const {
     return (x != other.x || y != other.y);
+}
+
+float Vec2::abs() const {
+    return sqrtf(x * x + y * y);
 }

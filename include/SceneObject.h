@@ -37,3 +37,16 @@ private:
     std::vector<Vec2> m_points;
     std::vector<Vec2> m_topVertices, m_bottomVertices;
 };
+
+class SceneCircle : public SceneObject {
+public:
+    SceneCircle(float radius, float red, float green, float blue);
+    SceneCircle(float radius, float red, float green, float blue, int resolution);
+    std::vector<float> GetVertices() const override;
+    std::vector<int> GetIndices() const override;
+    bool Contains(const Vec2 &point) const override;
+private:
+    std::vector<Vec2> m_points;
+    float m_radius;
+    void InitCircle(float radius, int resolution);
+};

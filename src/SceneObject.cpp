@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include <cmath>
 #include <algorithm>
 #include <cassert>
@@ -117,4 +119,52 @@ bool SceneConvexPolygon::Contains(const Vec2 &point) const {
         return false;
     
     return true;
+}
+
+SceneCircle::SceneCircle(float radius, float red, float green, float blue)
+    : SceneObject(position), m_radius(radius) {
+    color = Vec3(red, green, blue);
+
+    InitCircle(radius, 30);
+}
+
+SceneCircle::SceneCircle(float radius, float red, float green, float blue, int resolution)
+    : SceneObject(position), m_radius(radius) {
+    color = Vec3(red, green, blue);
+
+    if (resolution < 3) {
+        throw std::runtime_error("ERROR: Cannot create a circle with less than 3 points");
+    }
+    InitCircle(radius, resolution);
+}
+
+std::vector<float> SceneCircle::GetVertices() const {
+    std::vector<float> vertices;
+    vertices.reserve(m_points.size() * 6);
+    for (const Vec2 &point : m_points) {
+        vertices.insert(vertices.end(), {point.x, point.y, zIndex, color.x, color.y, color.z});
+    }
+    return vertices;
+}
+
+std::vector<int> SceneCircle::GetIndices() const {
+    std::vector<int> indices;
+    // For a convex polygon with N corners, we can draw it with N-2 triangles
+    indices.reserve((m_points.size() - 2) * 3);
+    for (int i = 1; i < (int)m_points.size() - 1; i++) {
+        indices.insert(indices.end(), {0, i, i + 1});
+    }
+    return indices;
+}
+
+bool SceneCircle::Contains(const Vec2 &point) const {
+    // Check if distance from circle center to point is less than the circle's radius
+    return (point - position).abs() <= m_radius;
+}
+
+void SceneCircle::InitCircle(float radius, int resolution) {
+    float angleBetweenPoints = 2.0 * M_PI / (float)resolution;
+    for (int i = 0; i < resolution; i++) {
+        m_points.emplace_back(radius * cos(angleBetweenPoints * i), radius * sin(angleBetweenPoints * i));
+    }
 }

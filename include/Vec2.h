@@ -20,4 +20,6 @@ struct Vec2 {
     bool operator>=(const Vec2 &other) const;
     bool operator==(const Vec2 &other) const;
     bool operator!=(const Vec2 &other) const;
+
+    float abs() const;
 };
