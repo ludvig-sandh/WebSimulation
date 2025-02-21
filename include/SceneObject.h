@@ -35,4 +35,5 @@ public:
     bool Contains(const Vec2 &point) const override;
 private:
     std::vector<Vec2> m_points;
+    std::vector<Vec2> m_topVertices, m_bottomVertices;
 };

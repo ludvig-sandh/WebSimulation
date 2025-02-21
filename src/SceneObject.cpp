@@ -1,4 +1,7 @@
 #include <cmath>
+#include <algorithm>
+#include <cassert>
+#include <iostream>
 
 #include "SceneObject.h"
 #include "Vec2.h"
@@ -43,6 +46,24 @@ bool SceneRect::Contains(const Vec2 &point) const {
 SceneConvexPolygon::SceneConvexPolygon(const std::vector<Vec2> &points, float red, float green, float blue)
     : SceneObject(position), m_points(points) {
     color = Vec3(red, green, blue);
+
+    int minIndex = std::distance(m_points.begin(), std::min_element(m_points.begin(), m_points.end()));
+
+    int topIndex = minIndex;
+    int bottomIndex = minIndex;
+    float lastX;
+    do {
+        m_topVertices.push_back(m_points[topIndex]);
+        lastX = m_points[topIndex].x;
+        topIndex = (topIndex - 1) % m_points.size();
+    }while (m_points[topIndex].x > lastX);
+    do {
+        m_bottomVertices.push_back(m_points[bottomIndex]);
+        lastX = m_points[bottomIndex].x;
+        bottomIndex = (bottomIndex + 1) % m_points.size();
+    }while (m_points[bottomIndex].x > lastX);
+
+    assert(m_topVertices.back().x == m_bottomVertices.back().x);
 }
 
 std::vector<float> SceneConvexPolygon::GetVertices() const {
@@ -64,7 +85,36 @@ std::vector<int> SceneConvexPolygon::GetIndices() const {
     return indices;
 }
 
+// Point in convex polygon checking algorithm
 bool SceneConvexPolygon::Contains(const Vec2 &point) const {
-    // TODO: Implement point in convex polygon checking algorithm
+    // Point is to the left of the entire polygon
+    if (point.x < m_topVertices.front().x)
+        return false;
+
+    if (point.x > m_topVertices.back().x)
+        return false;
+
+    int indexFirstElementGreater = std::distance(m_topVertices.begin(), std::upper_bound(m_topVertices.begin(), m_topVertices.end(), point));
+    indexFirstElementGreater = std::min(indexFirstElementGreater, (int)m_topVertices.size() - 1);
+    Vec2 rightPoint = m_topVertices[indexFirstElementGreater];
+    Vec2 leftPoint = m_topVertices[indexFirstElementGreater - 1];
+    assert(point.x >= leftPoint.x);
+    assert(point.x <= rightPoint.x);
+    float slopeBetweenPoints = (rightPoint.y - leftPoint.y) / (rightPoint.x - leftPoint.x);
+    float maxYHeight = (point.x - leftPoint.x) * slopeBetweenPoints + leftPoint.y;
+    if (point.y > maxYHeight)
+        return false;
+    
+    indexFirstElementGreater = std::distance(m_bottomVertices.begin(), std::upper_bound(m_bottomVertices.begin(), m_bottomVertices.end(), point));
+    indexFirstElementGreater = std::min(indexFirstElementGreater, (int)m_bottomVertices.size() - 1);
+    rightPoint = m_bottomVertices[indexFirstElementGreater];
+    leftPoint = m_bottomVertices[indexFirstElementGreater - 1];
+    assert(point.x >= leftPoint.x);
+    assert(point.x <= rightPoint.x);
+    slopeBetweenPoints = (rightPoint.y - leftPoint.y) / (rightPoint.x - leftPoint.x);
+    float minYHeight = (point.x - leftPoint.x) * slopeBetweenPoints + leftPoint.y;
+    if (point.y < minYHeight)
+        return false;
+    
     return true;
 }
