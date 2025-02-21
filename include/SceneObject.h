@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include "SceneGeometry.h"
 #include "Vec2.h"
 #include "Vec3.h"
 
