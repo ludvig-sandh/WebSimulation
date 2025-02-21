@@ -7,6 +7,7 @@
 #include "WindowException.h"
 #include "FPSTracker.h"
 #include "Config.h"
+#include "MyScene.h"
 
 // Since m_window (unique_ptr) needs a custom destroyer function, we have to specify it in the initializer list
 WindowHandler::WindowHandler(const int screenWidth, const int screenHeight) : m_window(nullptr, glfwDestroyWindow) {
@@ -154,7 +155,7 @@ void WindowHandler::BindBuffers() {
 }
 
 void WindowHandler::CreateScene() {
-    m_scene = std::make_unique<Scene>();
+    m_scene = std::make_unique<MyScene>();
 }
 
 void WindowHandler::HandleInteractions() {
