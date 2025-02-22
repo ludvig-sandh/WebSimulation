@@ -47,6 +47,7 @@ public:
     void SetScale(float scale);
 private:
     std::vector<Vec2> m_topHull, m_bottomHull;
+    float m_maxY, m_minY;
     bool CheckConcavity(std::vector<Vec2> points);
     void BuildTopAndBottomHulls();
 };

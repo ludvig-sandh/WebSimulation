@@ -125,6 +125,9 @@ bool SceneConvexPolygon::Contains(const Vec2 &point) const {
     if (transformed.x > m_topHull.back().x)
         return false;
 
+    if (transformed.y > m_maxY || transformed.y < m_minY)
+        return false;
+
     if (transformed.x == m_topHull.front().x)
         return transformed.y <= m_topHull.front().y && transformed.y >= m_bottomHull.front().y;
 
@@ -134,9 +137,7 @@ bool SceneConvexPolygon::Contains(const Vec2 &point) const {
     int indexFirstElementGreater = std::distance(m_topHull.begin(), std::upper_bound(m_topHull.begin(), m_topHull.end(), transformed));
     Vec2 rightPoint = m_topHull[indexFirstElementGreater];
     Vec2 leftPoint = m_topHull[indexFirstElementGreater - 1];
-    if (transformed.x < leftPoint.x) {
-        assert(transformed.x >= leftPoint.x);
-    }
+    assert(transformed.x >= leftPoint.x);
     assert(transformed.x <= rightPoint.x);
     float slopeBetweenPoints = (rightPoint.y - leftPoint.y) / (rightPoint.x - leftPoint.x);
     float maxYHeight = (transformed.x - leftPoint.x) * slopeBetweenPoints + leftPoint.y;
@@ -210,13 +211,15 @@ void SceneConvexPolygon::BuildTopAndBottomHulls() {
 
     // Push all points on the top part of the hull until we reach the rightmost point.
     do {
+        m_maxY = std::max(m_maxY, m_points[topIndex].y);
         m_topHull.push_back(m_points[topIndex]);
         lastX = m_points[topIndex].x;
         topIndex = (topIndex + m_points.size() - 1) % m_points.size();
     }while (m_points[topIndex].x > lastX);
-
+    
     // Push all points on the bottom part of the hull until we reach the rightmost point.
     do {
+        m_minY = std::min(m_minY, m_points[bottomIndex].y);
         m_bottomHull.push_back(m_points[bottomIndex]);
         lastX = m_points[bottomIndex].x;
         bottomIndex = (bottomIndex + 1) % m_points.size();
