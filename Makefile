@@ -3,7 +3,7 @@ CXX = g++
 CC = gcc
 CXXFLAGS = -Wall -Wextra -std=c++20
 CCFLAGS = -c -Wall -Wextra
-DEBUG_FLAGS = -g -Og
+DEBUG_FLAGS = -g -O0 -fno-inline -fno-omit-frame-pointer -ggdb -fno-elide-constructors
 
 INCLUDE_EXTERNAL_DIR = -Iinclude/external
 INCLUDE_DIR = -Iinclude
