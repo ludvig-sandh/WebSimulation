@@ -2,6 +2,7 @@
 #include <cassert>
 
 #include "Scene.h"
+#include "Vertex.h"
 
 void Scene::ComputeTriangles() {
     // TODO: Don't rebuild buffers every single frame.
@@ -14,10 +15,15 @@ void Scene::ComputeTriangles() {
 		for (int val : object->GetIndices()) {
             m_indexBuffer.push_back((GLuint)(vertexCount + val));
 		}
-        std::vector<float> vertices = object->GetVertices();
-        vertexCount += vertices.size() / 6;
-		for (const float &val : vertices) {
-            m_vertexBuffer.push_back((GLfloat)(val));
+        std::vector<Vertex> vertices = object->GetVertices();
+        vertexCount += vertices.size();
+		for (const Vertex &vertex : vertices) {
+            m_vertexBuffer.push_back((GLfloat)(vertex.x / (float)m_screenSize.x * 2.0 - 1.0));
+            m_vertexBuffer.push_back((GLfloat)(vertex.y / (float)m_screenSize.y * -2.0 + 1.0));
+            m_vertexBuffer.push_back((GLfloat)(vertex.z));
+            m_vertexBuffer.push_back((GLfloat)(vertex.r));
+            m_vertexBuffer.push_back((GLfloat)(vertex.g));
+            m_vertexBuffer.push_back((GLfloat)(vertex.b));
 		}
 	}
 }

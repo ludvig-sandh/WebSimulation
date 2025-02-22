@@ -4,10 +4,9 @@
 
 class MyScene : public Scene {
 public:
-    MyScene();
+    MyScene(const Vec2 screenSize);
     void Update(float timeDelta) override;
-	void MousePressed(Vec2 mouseLocation) override;
-	void MouseReleased(Vec2 mouseLocation) override;
+	void MouseUpdate(Vec2 mouseLocation, bool isButtonDown) override;
 private:
     std::vector<std::shared_ptr<SceneObject>> m_rects;
 };

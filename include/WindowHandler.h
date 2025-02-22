@@ -31,5 +31,5 @@ private:
     void BindBuffers();
     void CreateScene();
     void HandleInteractions();
-    void NormalizeCursorCoordinates(Vec2 &mouseX);
+    void GetMouseCoordinates(Vec2 &mouseX);
 };

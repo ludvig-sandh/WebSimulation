@@ -7,6 +7,7 @@
 
 #include "Vec2.h"
 #include "Vec3.h"
+#include "Vertex.h"
 
 class SceneObject {
 public:
@@ -19,7 +20,7 @@ public:
     void SetRotation(float angle);
     void SetScale(const Vec2 scale);
     void SetScale(const float scale);
-    std::vector<float> GetVertices() const;
+    std::vector<Vertex> GetVertices() const;
     virtual std::vector<int> GetIndices() const = 0;
 	virtual bool Contains(const Vec2 &point) const = 0;
 protected:
@@ -39,13 +40,15 @@ public:
 // Convex polygon provided by a list of points in counterclockwise order.
 class SceneConvexPolygon : public SceneObject {
 public:
-    SceneConvexPolygon(const Vec2 position, const std::vector<Vec2> points, float red, float green, float blue);
+    SceneConvexPolygon(const Vec2 position, std::vector<Vec2> points, float red, float green, float blue);
     std::vector<int> GetIndices() const override;
     bool Contains(const Vec2 &point) const override;
     void SetRotation(float angle);
     void SetScale(float scale);
 private:
-    std::vector<Vec2> m_topVertices, m_bottomVertices;
+    std::vector<Vec2> m_topHull, m_bottomHull;
+    bool CheckConcavity(std::vector<Vec2> points);
+    void BuildTopAndBottomHulls();
 };
 
 class SceneCircle : public SceneObject {

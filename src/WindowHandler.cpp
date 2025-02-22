@@ -156,25 +156,25 @@ void WindowHandler::BindBuffers() {
 }
 
 void WindowHandler::CreateScene() {
-    // m_scene = std::make_unique<MyScene>();
-    m_scene = std::make_unique<TestScene>();
+    Vec2 screenSize = Vec2((float)m_screenWidth, (float)m_screenHeight);
+    m_scene = std::make_unique<MyScene>(screenSize);
+    // m_scene = std::make_unique<TestScene>(screenSize);
 }
 
 void WindowHandler::HandleInteractions() {
     Vec2 mouse_point;
+    GetMouseCoordinates(mouse_point);
 	if (glfwGetMouseButton(m_window.get(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		NormalizeCursorCoordinates(mouse_point);
-		m_scene->MousePressed(mouse_point);
+		m_scene->MouseUpdate(mouse_point, true);
 	}else if (glfwGetMouseButton(m_window.get(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
-		NormalizeCursorCoordinates(mouse_point);
-		m_scene->MouseReleased(mouse_point);
+		m_scene->MouseUpdate(mouse_point, false);
 	}
 }
 
 // Finds the mouse coordinates and maps them into the range [-1, 1]
-void WindowHandler::NormalizeCursorCoordinates(Vec2 &mouse_point) {
+void WindowHandler::GetMouseCoordinates(Vec2 &mouse_point) {
     double x, y;
 	glfwGetCursorPos(m_window.get(), &x, &y);
-	mouse_point.x = (float)x / m_screenWidth * 2.0 - 1.0;
-	mouse_point.y = (float)y / m_screenHeight * -2.0 + 1.0;
+	mouse_point.x = (float)x;
+	mouse_point.y = (float)y;
 }
