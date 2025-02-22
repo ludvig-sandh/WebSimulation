@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <set>
 
 #include "GLFW/glfw3.h"
 #include "SceneObject.h"
@@ -10,10 +11,10 @@ class Scene {
 public:
 	virtual void Update(float timeDelta) = 0;
 	void ComputeTriangles();
-    GLfloat *getVertexBuffer();
-    GLuint *getIndexBuffer();
-    int getVertexBufferCount();
-    int getIndexBufferCount();
+    GLfloat *GetVertexBuffer();
+    GLuint *GetIndexBuffer();
+    int GetVertexBufferCount();
+    int GetIndexBufferCount();
 
 	virtual void MousePressed(Vec2 mouseLocation) = 0;
 	virtual void MouseReleased(Vec2 mouseLocation) = 0;
@@ -22,9 +23,10 @@ private:
     std::vector<GLfloat> m_vertexBuffer; // X, Y, Z, R, G, B repeating for each vertex
     std::vector<GLuint> m_indexBuffer; // v0, v1, v2 (for a triangle) repeating for each triangle
 
-    std::vector<std::shared_ptr<SceneObject>> m_objects;
+    std::set<std::shared_ptr<SceneObject>, SceneObjectIdComparator> m_objects;
+    int32_t m_largestId = -1;
 protected:
     int width, height;
     void AddObject(std::shared_ptr<SceneObject> object);
-    void RemoveObject(std::shared_ptr<SceneObject> object);
+    void RemoveObject(const std::shared_ptr<SceneObject> &object);
 };

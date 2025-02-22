@@ -25,6 +25,24 @@ void Vec2::operator-=(const Vec2 &other) {
     y -= other.y;
 }
 
+Vec2 Vec2::operator*(const Vec2 &other) const {
+    return Vec2(x * other.x, y * other.y);
+}
+
+void Vec2::operator*=(const Vec2 &other) {
+    x *= other.x;
+    y *= other.y;
+}
+
+Vec2 Vec2::operator/(const Vec2 &other) const {
+    return Vec2(x / other.x, y / other.y);
+}
+
+void Vec2::operator/=(const Vec2 &other) {
+    x /= other.x;
+    y /= other.y;
+}
+
 Vec2 Vec2::operator*(const float &scalar) const {
     return Vec2(x * scalar, y * scalar);
 }
@@ -32,6 +50,15 @@ Vec2 Vec2::operator*(const float &scalar) const {
 void Vec2::operator*=(const float &scalar) {
     x *= scalar;
     y *= scalar;
+}
+
+Vec2 Vec2::operator/(const float &scalar) const {
+    return Vec2(x / scalar, y / scalar);
+}
+
+void Vec2::operator/=(const float &scalar) {
+    x /= scalar;
+    y /= scalar;
 }
 
 bool Vec2::operator<(const Vec2 &other) const {
@@ -72,4 +99,8 @@ bool Vec2::operator!=(const Vec2 &other) const {
 
 float Vec2::abs() const {
     return sqrtf(x * x + y * y);
+}
+
+Vec2 Vec2::rotate(const float &angle) const {
+    return Vec2(x * cos(angle) - y * sin(angle), x * sin(angle) + y *  cos(angle));
 }

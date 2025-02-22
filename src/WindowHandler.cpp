@@ -8,6 +8,7 @@
 #include "FPSTracker.h"
 #include "Config.h"
 #include "MyScene.h"
+#include "TestScene.h"
 
 // Since m_window (unique_ptr) needs a custom destroyer function, we have to specify it in the initializer list
 WindowHandler::WindowHandler(const int screenWidth, const int screenHeight) : m_window(nullptr, glfwDestroyWindow) {
@@ -65,10 +66,10 @@ void WindowHandler::RunMainLoop() {
 		m_scene->ComputeTriangles();
         
 		// Link object to vertices
-		m_vbo->Link(m_scene->getVertexBuffer(), m_scene->getVertexBufferCount() * sizeof(GLfloat));
+		m_vbo->Link(m_scene->GetVertexBuffer(), m_scene->GetVertexBufferCount() * sizeof(GLfloat));
 
         // Link object to indices
-        m_ebo->Link(m_scene->getIndexBuffer(), m_scene->getIndexBufferCount() * sizeof(GLuint));
+        m_ebo->Link(m_scene->GetIndexBuffer(), m_scene->GetIndexBufferCount() * sizeof(GLuint));
         
 		// Redraw background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -83,7 +84,7 @@ void WindowHandler::RunMainLoop() {
 		m_vao->Bind();
 
         // Draw all triangles
-		glDrawElements(GL_TRIANGLES, m_scene->getIndexBufferCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, m_scene->GetIndexBufferCount(), GL_UNSIGNED_INT, 0);
         
 		// Make sure to swap image buffers to display the correct frame
 		glfwSwapBuffers(m_window.get());
@@ -155,7 +156,8 @@ void WindowHandler::BindBuffers() {
 }
 
 void WindowHandler::CreateScene() {
-    m_scene = std::make_unique<MyScene>();
+    // m_scene = std::make_unique<MyScene>();
+    m_scene = std::make_unique<TestScene>();
 }
 
 void WindowHandler::HandleInteractions() {

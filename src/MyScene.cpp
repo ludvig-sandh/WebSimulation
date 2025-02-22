@@ -34,19 +34,21 @@ void MyScene::Update(float timeDelta) {
 }
 
 void MyScene::MousePressed(Vec2 mouseLocation) {
+    std::vector<std::shared_ptr<SceneObject>> newRects;
     for (auto &rect : m_rects) {
         if (rect->Contains(mouseLocation)) {
-            rect->color.z = 1.0;
+            RemoveObject(rect);
         }else {
-            rect->color.z = 0.0;
+            newRects.push_back(rect);
         }
     }
+    m_rects = newRects;
 }
 
 void MyScene::MouseReleased(Vec2 mouseLocation) {
     for (auto &rect : m_rects) {
         if (rect->Contains(mouseLocation)) {
-            rect->color.z = 0.0;
+            // rect->color.z = 0.0;
         }
     }
 }

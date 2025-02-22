@@ -10,11 +10,11 @@ void Scene::ComputeTriangles() {
     m_vertexBuffer.clear();
     m_indexBuffer.clear();
 
-	for (size_t i = 0; i < m_objects.size(); i++) {
-		for (int val : m_objects[i]->GetIndices()) {
+    for (auto &object : m_objects) {
+		for (int val : object->GetIndices()) {
             m_indexBuffer.push_back((GLuint)(vertexCount + val));
 		}
-        std::vector<float> vertices = m_objects[i]->GetVertices();
+        std::vector<float> vertices = object->GetVertices();
         vertexCount += vertices.size() / 6;
 		for (const float &val : vertices) {
             m_vertexBuffer.push_back((GLfloat)(val));
@@ -22,24 +22,29 @@ void Scene::ComputeTriangles() {
 	}
 }
 
-GLfloat *Scene::getVertexBuffer() {
+GLfloat *Scene::GetVertexBuffer() {
     return this->m_vertexBuffer.data();
 }
 
-GLuint *Scene::getIndexBuffer() {
+GLuint *Scene::GetIndexBuffer() {
     return this->m_indexBuffer.data();
 }
 
-int Scene::getVertexBufferCount() {
+int Scene::GetVertexBufferCount() {
     return this->m_vertexBuffer.size();
 }
 
-int Scene::getIndexBufferCount() {
+int Scene::GetIndexBufferCount() {
     return this->m_indexBuffer.size();
 }
 
 void Scene::AddObject(std::shared_ptr<SceneObject> object) {
-    m_objects.push_back(object);
+    object->id = ++m_largestId;
+    m_objects.insert(object);
 }
 
-// TODO: Implement RemoveObject. Instead of vector, use map or something so we can remove an object in O(1)
+void Scene::RemoveObject(const std::shared_ptr<SceneObject> &object) {
+    if (m_objects.find(object) != m_objects.end()) {
+        m_objects.erase(object);
+    }
+}
