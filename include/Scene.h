@@ -26,6 +26,7 @@ private:
 
     std::set<std::shared_ptr<SceneObject>, SceneObjectIdComparator> m_objects;
     int32_t m_largestId = -1;
+    bool m_needsToUpdateindexBuffer = true;
 protected:
     Vec2 m_screenSize;
     void AddObject(std::shared_ptr<SceneObject> object);
