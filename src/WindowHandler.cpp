@@ -9,6 +9,7 @@
 #include "Config.h"
 #include "MyScene.h"
 #include "TestScene.h"
+#include "VoronoiScene.h"
 
 // Since m_window (unique_ptr) needs a custom destroyer function, we have to specify it in the initializer list
 WindowHandler::WindowHandler(const int screenWidth, const int screenHeight) : m_window(nullptr, glfwDestroyWindow) {
@@ -157,7 +158,8 @@ void WindowHandler::BindBuffers() {
 
 void WindowHandler::CreateScene() {
     Vec2 screenSize = Vec2((float)m_screenWidth, (float)m_screenHeight);
-    m_scene = std::make_unique<MyScene>(screenSize);
+    // m_scene = std::make_unique<MyScene>(screenSize);
+    m_scene = std::make_unique<VoronoiScene>(screenSize);
     // m_scene = std::make_unique<TestScene>(screenSize);
 }
 
